@@ -81,8 +81,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: push-to-docker-hub
     environment:
-      name: grocery-shop # Capstone Project name
-      url: https://grocery-shop-i6ne.onrender.com # Link to deployment
+      name: capstone-project-epicunion # Capstone Proj-ect name
+      url: https://epic-union.onrender.com # Link to deployment
     steps:
       - name: Trigger Render.com Deployment
         run: |

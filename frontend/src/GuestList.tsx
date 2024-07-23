@@ -1,21 +1,23 @@
-import {Guest} from "./components/FrontendSchema.ts";
+import {Guest, Task} from "./components/FrontendSchema.ts";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import {Link} from "react-router-dom";
 import './styling/GuestList.css';
 import AddGuestForm from "./components/AddGuestForm.tsx";
 import Modal from "./components/Modal.tsx";
+import {getGuests} from "./api/GuestService.ts";
+import {getTasks} from "./api/TaskService.ts";
+
 
 
 export default function GuestList() {
     const [guests, setGuests] = useState<Guest[]>([]);
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [isVisible, setIsVisible] = useState(false);
 
 
     const fetchGuests = () => {
-        axios.get('/api/guests')
-            .then(response => setGuests(response.data))
-            .catch(error => console.error(error));
+        getGuests().then(response => setGuests(response.data));
+        getTasks().then(response => setTasks(response.data));
     }
 
     useEffect(() => {
@@ -32,7 +34,6 @@ export default function GuestList() {
 
 
 
-
     return (
         <div className="guest-list">
             <button onClick={openModal}>ADD New Guest</button>
@@ -42,18 +43,25 @@ export default function GuestList() {
             <h1>Gästeliste</h1>
             <ul>
                 {guests.map(guest => (
-                    <>
-                    <Link to={`/guests/${guest.id}`}>
-                        <li key={guest.id}>
+                    <li key={guest.id}>
+                        <Link to={`/guests/${guest.id}`}>
                             <div>Name: {guest.name}</div>
                             <div>Contact: {guest.email}</div>
                             <div>Status: {guest.rsvpStatus}</div>
                             <p>{guest.notes}</p>
-                        </li>
-                    </Link>
-                    </>
+                            <ul>
+                                {(guest.taskIds || []).map(taskId => {
+                                    const task = tasks.find(t => t.id === taskId);
+                                    return task ? (
+                                        <li key={task.id}>{task.title}</li>
+                                    ) : null;
+                                })}
+                            </ul>
+                        </Link>
+                    </li>
                 ))}
             </ul>
+            <Link to={"/"}>Back to Home Page</Link>
         </div>
     )
 

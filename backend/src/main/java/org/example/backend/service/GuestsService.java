@@ -33,7 +33,7 @@ public class GuestsService {
                 guestDto.email(),
                 guestDto.rsvpStatus(),
                 guestDto.notes(),
-                List.of());
+                guestDto.taskIds() != null ? guestDto.taskIds() : new ArrayList<>());
         guestsRepo.save(guests);
     }
 
@@ -42,7 +42,8 @@ public class GuestsService {
         updateGuest = updateGuest.withName(guestDto.name())
                 .withEmail(guestDto.email())
                 .withRsvpStatus(guestDto.rsvpStatus())
-                .withNotes(guestDto.notes());
+                .withNotes(guestDto.notes())
+                .withTaskIds(guestDto.taskIds() != null ? guestDto.taskIds() : new ArrayList<>());
         guestsRepo.save(updateGuest);
     }
 
@@ -53,9 +54,11 @@ public class GuestsService {
 
 
     public void addTaskToGuest(String guestId, String taskId) {
-        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
+        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow(() -> new RuntimeException("Guest not found"));
         List<String> updatedTaskIds = new ArrayList<>(guest.taskIds());
-        updatedTaskIds.add(taskId);
+        if (!updatedTaskIds.contains(taskId)) {
+            updatedTaskIds.add(taskId);
+        }
         guest = guest.withTaskIds(updatedTaskIds);
         guestsRepo.save(guest);
     }

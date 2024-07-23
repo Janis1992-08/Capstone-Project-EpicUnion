@@ -1,39 +1,69 @@
-import React, {useState} from "react";
-import axios from "axios";
-import {rsvpStatuses} from "./FrontendSchema.ts";
-
+import React, {useEffect, useState} from 'react';
+import {Guest, rsvpStatuses, Task} from "./FrontendSchema.ts";
+import {createGuest} from "../api/GuestService.ts";
+import {getTasks} from "../api/TaskService.ts";
 
 
 interface AddGuestFormProps {
-    onGuestAdded: () => void;
+    onGuestAdded: (newGuest: Guest) => void;
 }
 
-export default function AddGuestForm({onGuestAdded}: Readonly<AddGuestFormProps>) {
+export default function AddGuestForm({ onGuestAdded }: Readonly<AddGuestFormProps>) {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         rsvpStatus: rsvpStatuses[0].value,
-        notes: ""
+        notes: "",
+        taskIds: [] as string[]
     });
 
+    const [tasks, setTasks] = useState<Task[]>([]);
+
+    useEffect(() => {
+        getTasks().then(response => setTasks(response.data))
+            .catch(error => console.error('Error fetching tasks:', error));
+    }, []);
+
     function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
+        const { name, value } = event.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
+    function handleTaskChange(event: React.ChangeEvent<HTMLSelectElement>) {
+        const selectedTaskId = event.target.value;
+        setFormData(prevState => {
+            if (selectedTaskId === "") return prevState;
+            const updatedTaskIds = [...prevState.taskIds];
+            if (!updatedTaskIds.includes(selectedTaskId)) {
+                updatedTaskIds.push(selectedTaskId);
+            }
+
+            return {
+                ...prevState,
+                taskIds: updatedTaskIds
+            };
         });
     }
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-
-        axios.post('/api/guests', formData).then(response => {
-            console.log('Guest added:', response.data);
-            onGuestAdded();
-            setFormData({name: '', email: '', rsvpStatus: rsvpStatuses[0].value, notes: ''});
-        })
-            .catch(error => console.error(error));
-
-    }
+        createGuest(formData)
+            .then(response => {
+                console.log('Guest added:', response.data);
+                onGuestAdded(response.data);
+                setFormData({
+                    name: '',
+                    email: '',
+                    rsvpStatus: rsvpStatuses[0].value,
+                    notes: '',
+                    taskIds: []
+                });
+            })
+            .catch(error => console.error('Error adding guest:', error));
+    };
 
     return (
         <form onSubmit={handleSubmit} className="add-guest-form">
@@ -75,6 +105,19 @@ export default function AddGuestForm({onGuestAdded}: Readonly<AddGuestFormProps>
                 </select>
             </div>
             <div>
+                <label htmlFor="taskIds">Assign Task:</label>
+                <select
+                    id="taskIds"
+                    name="taskIds"
+                    onChange={handleTaskChange}
+                >
+                    <option value="">Select a task</option>
+                    {tasks.map(task => (
+                        <option key={task.id} value={task.id}>{task.title}</option>
+                    ))}
+                </select>
+            </div>
+            <div>
                 <label htmlFor="notes">Notizen:</label>
                 <textarea
                     id="notes"
@@ -86,6 +129,4 @@ export default function AddGuestForm({onGuestAdded}: Readonly<AddGuestFormProps>
             <button type="submit">Hinzufügen</button>
         </form>
     );
-
-
 }

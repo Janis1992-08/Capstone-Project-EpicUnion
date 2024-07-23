@@ -1,0 +1,39 @@
+.guest-list {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+}
+
+.guest-list h1 {
+    text-align: center;
+    color: white;
+}
+
+.guest-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.guest-list li {
+    background: #f9f9f9;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.guest-list li a {
+    text-decoration: none;
+    color: black;
+}
+
+.guest-list li a:hover {
+    text-decoration: underline;
+    color: darkorange ;
+}
+
+.guest-list p {
+    margin: 5px 0 0;
+    color: #666;
+}

@@ -1,10 +1,12 @@
 package org.example.backend.dto;
 
-import org.example.backend.model.RsvpStatus;
+import org.example.backend.model.RsvpStatusModel;
 
 public record GuestDto(
         String name,
         String email,
-        RsvpStatus rsvpStatus,
+        RsvpStatusModel rsvpStatus,
         String notes
 ) {}
+
+

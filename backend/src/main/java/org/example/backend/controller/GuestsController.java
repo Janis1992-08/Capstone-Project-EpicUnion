@@ -3,7 +3,7 @@ package org.example.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dto.GuestDto;
-import org.example.backend.model.Guests;
+import org.example.backend.model.GuestsModel;
 import org.example.backend.service.GuestsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +18,13 @@ public class GuestsController {
     private final GuestsService guestsService;
 
     @GetMapping
-    public List<Guests> getAllGuests() {
+    public List<GuestsModel> getAllGuests() {
         return guestsService.getAllGuests();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Guests> getGuestById(@PathVariable String id) {
-        Optional<Guests> guest = guestsService.getGuestById(id);
+    public ResponseEntity<GuestsModel> getGuestById(@PathVariable String id) {
+        Optional<GuestsModel> guest = guestsService.getGuestById(id);
         return guest.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -44,5 +44,10 @@ public class GuestsController {
     }
 
 
+    @PutMapping("/{guestId}/tasks/{taskId}")
+    public ResponseEntity<Void> assignTaskToGuest(@PathVariable String guestId, @PathVariable String taskId) {
+        guestsService.addTaskToGuest(guestId, taskId);
+        return ResponseEntity.ok().build();
+    }
 
 }

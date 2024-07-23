@@ -1,9 +1,11 @@
 package org.example.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dto.GuestDto;
-import org.example.backend.model.Guests;
+import org.example.backend.model.GuestsModel;
 import org.example.backend.repository.GuestsRepo;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,26 +18,27 @@ public class GuestsService {
     private final IdService idService;
 
 
-    public List<Guests> getAllGuests() {
+    public List<GuestsModel> getAllGuests() {
         return guestsRepo.findAll();
     }
 
 
-    public Optional<Guests> getGuestById(String id) {
+    public Optional<GuestsModel> getGuestById(String id) {
         return guestsRepo.findById(id);
     }
 
     public void addGuest(GuestDto guestDto) {
-        Guests guests = new Guests(idService.generateUUID(),
+        GuestsModel guests = new GuestsModel(idService.generateUUID(),
                 guestDto.name(),
                 guestDto.email(),
                 guestDto.rsvpStatus(),
-                guestDto.notes());
+                guestDto.notes(),
+                List.of());
         guestsRepo.save(guests);
     }
 
     public void updateGuest(String id, GuestDto guestDto) {
-        Guests updateGuest = guestsRepo.findById(id).orElseThrow();
+        GuestsModel updateGuest = guestsRepo.findById(id).orElseThrow();
         updateGuest = updateGuest.withName(guestDto.name())
                 .withEmail(guestDto.email())
                 .withRsvpStatus(guestDto.rsvpStatus())
@@ -43,10 +46,19 @@ public class GuestsService {
         guestsRepo.save(updateGuest);
     }
 
+
     public void deleteGuest(String id) {
         guestsRepo.deleteById(id);
     }
 
+
+    public void addTaskToGuest(String guestId, String taskId) {
+        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
+        List<String> updatedTaskIds = new ArrayList<>(guest.taskIds());
+        updatedTaskIds.add(taskId);
+        guest = guest.withTaskIds(updatedTaskIds);
+        guestsRepo.save(guest);
+    }
 
 
 }

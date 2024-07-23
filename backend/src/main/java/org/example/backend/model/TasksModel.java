@@ -6,12 +6,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @With
-@Document(collection = "guests")
-public record Guests(
+@Document(collection = "tasks")
+public record TasksModel(
         @Id
         String id,
-        String name,
-        String email,
-        RsvpStatus rsvpStatus,
-        String notes
-) {}
+        String title,
+        String description,
+        TasksStatusModel taskStatus,
+        String dueDate,
+        String assignedTo
+) {
+}

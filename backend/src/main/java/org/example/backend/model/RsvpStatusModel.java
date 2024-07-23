@@ -3,7 +3,7 @@ package org.example.backend.model;
 import lombok.Getter;
 
 @Getter
-public enum RsvpStatus {
+public enum RsvpStatusModel {
     CONFIRMED,
     DECLINED,
     PENDING

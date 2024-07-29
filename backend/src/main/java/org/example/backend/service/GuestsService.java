@@ -2,7 +2,9 @@ package org.example.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dto.GuestDto;
 import org.example.backend.model.GuestsModel;
+import org.example.backend.model.TasksModel;
 import org.example.backend.repository.GuestsRepo;
+import org.example.backend.repository.TasksRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class GuestsService {
     private final GuestsRepo guestsRepo;
     private final IdService idService;
+    private final TasksRepo tasksRepo;
 
 
     public List<GuestsModel> getAllGuests() {
@@ -62,9 +65,18 @@ public class GuestsService {
             updatedTasks.add(taskId);
             GuestsModel updatedGuest = guest.withAssignedTasks(updatedTasks);
             guestsRepo.save(updatedGuest);
-            System.out.println("Task assigned to guest: " + guestId + ", Task ID: " + taskId);
+        }
+
+        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+        List<String> updatedGuests = new ArrayList<>(task.assignedTo());
+        if (!updatedGuests.contains(guestId)) {
+            updatedGuests.add(guestId);
+            TasksModel updatedTask = task.withAssignedTo(updatedGuests);
+            tasksRepo.save(updatedTask);
         }
     }
+
+
 
 
 

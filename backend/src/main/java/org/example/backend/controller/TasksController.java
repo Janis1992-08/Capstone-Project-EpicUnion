@@ -47,6 +47,11 @@ public class TasksController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{taskId}/guests/{guestId}")
+    public ResponseEntity<Void> addGuestToTask(@PathVariable String taskId, @PathVariable String guestId) {
+        tasksService.addGuestToTask(taskId, guestId);
+        return ResponseEntity.ok().build();
+    }
 
 
 

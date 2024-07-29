@@ -102,4 +102,16 @@ public class TasksService {
     }
 
 
+    public void addGuestToTask(String taskId, String guestId) {
+        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+        List<String> assignedGuests = new ArrayList<>(task.assignedTo());
+        if (!assignedGuests.contains(guestId)) {
+            assignedGuests.add(guestId);
+            TasksModel updatedTask = task.withAssignedTo(assignedGuests);
+            tasksRepo.save(updatedTask);
+        }
+    }
+
+
+
 }

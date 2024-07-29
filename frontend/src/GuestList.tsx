@@ -2,7 +2,7 @@ import {Guest, Task} from "./components/FrontendSchema.ts";
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import './styling/GuestList.css';
-import AddGuestForm from "./components/AddGuestForm.tsx";
+import AddGuestForm from "./components/guestComponents/AddGuestForm.tsx";
 import Modal from "./components/Modal.tsx";
 import {getGuests} from "./api/GuestService.ts";
 import {getTasks} from "./api/TaskService.ts";
@@ -50,8 +50,8 @@ export default function GuestList() {
                             <div>Status: {guest.rsvpStatus}</div>
                             <p>{guest.notes}</p>
                             <ul>
-                                {(guest.taskIds || []).map(taskId => {
-                                    const task = tasks.find(t => t.id === taskId);
+                                {(guest.assignedTasks || []).map(assignedTasks => {
+                                    const task = tasks.find(t => t.id === assignedTasks);
                                     return task ? (
                                         <li key={task.id}>{task.title}</li>
                                     ) : null;

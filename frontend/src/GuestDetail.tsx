@@ -2,7 +2,7 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import {Guest, Task} from "./components/FrontendSchema.ts";
 import {useEffect, useState} from "react";
 import './styling/GuestDetail.css';
-import UpdateGuestForm from "./components/UpdateGuestForm.tsx";
+import UpdateGuestForm from "./components/guestComponents/UpdateGuestForm.tsx";
 import Modal from "./components/Modal.tsx";
 import {assignTaskToGuest, deleteGuest, getGuestById} from "./api/GuestService.ts";
 import {getTasks} from "./api/TaskService.ts";
@@ -47,7 +47,7 @@ const [isVisible, setIsVisible] = useState(false);
     const handleDelete = () => {
         if (id) {
             deleteGuest(id).then(() => {
-                navigate('/');
+                navigate('/guests');
             })
         }
     }
@@ -61,6 +61,7 @@ const [isVisible, setIsVisible] = useState(false);
 
     }
 
+    console.log(guest.assignedTasks);
 
 return (
     <div className="guest-detail">
@@ -71,7 +72,7 @@ return (
         <p><strong>Notes:</strong> {guest.notes}</p>
         <h2>Tasks: </h2>
         <ul>
-            {(guest.taskIds || []).map(taskId => {
+            {(guest.assignedTasks || []).map(taskId => {
                 const task = tasks.find(t => t.id === taskId);
                 return task ? (
                     <li key={task.id}>{task.title} - {task.taskStatuses}</li>
@@ -95,7 +96,7 @@ return (
             <UpdateGuestForm guest={guest} onGuestUpdate={handleGuestUpdate}/>
         </Modal>
         <br/>
-        <Link to={"/"}>Back to Guest List</Link>
+        <Link to={"/guests"}>Back to Guest List</Link>
     </div>
 );
 }

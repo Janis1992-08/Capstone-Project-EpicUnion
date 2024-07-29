@@ -9,7 +9,7 @@ public record GuestDto(
         String email,
         RsvpStatusModel rsvpStatus,
         String notes,
-        List<String> taskIds
+        List<String> assignedTasks
 ) {}
 
 

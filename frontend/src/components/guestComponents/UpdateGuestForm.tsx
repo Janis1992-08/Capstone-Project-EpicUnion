@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {Guest, rsvpStatuses, Task} from "./FrontendSchema.ts";
-import {updateGuest} from "../api/GuestService.ts";
-import {getTasks} from "../api/TaskService.ts";
+import {Guest, rsvpStatuses, Task} from "../FrontendSchema.ts";
+import {updateGuest} from "../../api/GuestService.ts";
+import {getTasks} from "../../api/TaskService.ts";
 
 interface UpdateGuestFormProps {
     guest: Guest;
@@ -14,7 +14,7 @@ export default function UpdateGuestForm({guest, onGuestUpdate}: Readonly<UpdateG
         email: guest.email,
         rsvpStatus: guest.rsvpStatus,
         notes: guest.notes,
-        taskIds: guest.taskIds
+        assignedTasks: guest.assignedTasks
     });
 
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -37,7 +37,7 @@ export default function UpdateGuestForm({guest, onGuestUpdate}: Readonly<UpdateG
 
             if (selectedTaskId === "") return prevState;
 
-            const updatedTaskIds = [...prevState.taskIds];
+            const updatedTaskIds = [...prevState.assignedTasks];
             if (!updatedTaskIds.includes(selectedTaskId)) {
                 updatedTaskIds.push(selectedTaskId);
             }
@@ -52,7 +52,7 @@ export default function UpdateGuestForm({guest, onGuestUpdate}: Readonly<UpdateG
     function handleTaskRemove(taskId: string) {
         setFormData(prevState => ({
             ...prevState,
-            taskIds: prevState.taskIds.filter(id => id !== taskId)
+            taskIds: prevState.assignedTasks.filter(id => id !== taskId)
         }));
     }
 
@@ -130,7 +130,7 @@ export default function UpdateGuestForm({guest, onGuestUpdate}: Readonly<UpdateG
             <div>
                 <h4>Assigned Tasks:</h4>
                 <ul>
-                    {formData.taskIds.map(taskId => {
+                    {formData.assignedTasks.map(taskId => {
                         const task = tasks.find(t => t.id === taskId);
                         return task ? (
                             <li key={task.id}>

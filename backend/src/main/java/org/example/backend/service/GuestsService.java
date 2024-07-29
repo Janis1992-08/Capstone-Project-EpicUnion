@@ -28,12 +28,14 @@ public class GuestsService {
     }
 
     public void addGuest(GuestDto guestDto) {
-        GuestsModel guests = new GuestsModel(idService.generateUUID(),
+        GuestsModel guests = new GuestsModel(
+                idService.generateUUID(),
                 guestDto.name(),
                 guestDto.email(),
                 guestDto.rsvpStatus(),
                 guestDto.notes(),
-                guestDto.taskIds() != null ? guestDto.taskIds() : new ArrayList<>());
+                guestDto.assignedTasks() != null ? guestDto.assignedTasks() : new ArrayList<>()
+        );
         guestsRepo.save(guests);
     }
 
@@ -43,7 +45,7 @@ public class GuestsService {
                 .withEmail(guestDto.email())
                 .withRsvpStatus(guestDto.rsvpStatus())
                 .withNotes(guestDto.notes())
-                .withTaskIds(guestDto.taskIds() != null ? guestDto.taskIds() : new ArrayList<>());
+                .withAssignedTasks(guestDto.assignedTasks() != null ? guestDto.assignedTasks() : new ArrayList<>());
         guestsRepo.save(updateGuest);
     }
 
@@ -53,15 +55,17 @@ public class GuestsService {
     }
 
 
-    public void addTaskToGuest(String guestId, String taskId) {
-        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow(() -> new RuntimeException("Guest not found"));
-        List<String> updatedTaskIds = new ArrayList<>(guest.taskIds());
-        if (!updatedTaskIds.contains(taskId)) {
-            updatedTaskIds.add(taskId);
+    public void assignTaskToGuest(String guestId, String taskId) {
+        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
+        List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
+        if (!updatedTasks.contains(taskId)) {
+            updatedTasks.add(taskId);
+            GuestsModel updatedGuest = guest.withAssignedTasks(updatedTasks);
+            guestsRepo.save(updatedGuest);
+            System.out.println("Task assigned to guest: " + guestId + ", Task ID: " + taskId);
         }
-        guest = guest.withTaskIds(updatedTaskIds);
-        guestsRepo.save(guest);
     }
+
 
 
 }

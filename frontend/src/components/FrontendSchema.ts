@@ -6,7 +6,7 @@ export interface Guest {
     email: string;
     rsvpStatus: string;
     notes: string;
-    taskIds: string[];
+    assignedTasks: string[];
 }
 
 export interface Task {
@@ -15,7 +15,7 @@ export interface Task {
     description: string;
     taskStatuses: string;
     dueDate: string;
-    assignedTo: string;
+    assignedTo: string[];
 }
 
 export interface GuestForm {

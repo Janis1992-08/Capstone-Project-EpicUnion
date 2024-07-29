@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.dto.TasksDto;
 import org.example.backend.model.TasksModel;
 import org.example.backend.service.TasksService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,13 +30,15 @@ public class TasksController {
     }
 
     @PostMapping
-    public TasksModel addTask(@RequestBody TasksDto tasksDto) {
-        return tasksService.addTask(tasksDto);
+    public ResponseEntity<TasksModel> addTask(@RequestBody TasksDto tasksDto) {
+        TasksModel newTask = tasksService.addTask(tasksDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTask);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TasksModel> updateTask(@PathVariable String id, @RequestBody TasksDto taskDto) {
-        return ResponseEntity.ok(tasksService.updateTask(id, taskDto));
+        TasksModel updatedTask = tasksService.updateTask(id, taskDto);
+        return ResponseEntity.ok(updatedTask);
     }
 
     @DeleteMapping("/{id}")

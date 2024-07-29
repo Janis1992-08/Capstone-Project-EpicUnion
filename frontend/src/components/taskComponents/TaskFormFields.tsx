@@ -1,45 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import { Task, taskStatuses} from "./FrontendSchema.ts";
-import {createTask, updateTask} from "../api/TaskService.ts";
+import React from 'react';
+import {Guest, Task, taskStatuses} from "../FrontendSchema.ts";
 
-
-interface TaskFormProps {
-    initialTask?: Task | null;
-    onSave: () => void;
+interface TaskFormFieldsProps {
+    task: Task;
+    guests: Guest[];
+    handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+    handleAssignedToChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-export default function AddTaskForm({ initialTask, onSave }: Readonly<TaskFormProps>) {
-    const [task, setTask] = useState<Task>(initialTask || {
-        id: '',
-        title: '',
-        description: '',
-        dueDate: '',
-        taskStatuses: '',
-        assignedTo: ''
-    });
-
-    useEffect(() => {
-        if (initialTask) {
-            setTask(initialTask);
-        }
-    }, [initialTask]);
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = event.target;
-        setTask({ ...task, [name]: value });
-    };
-
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        if (task.id) {
-            updateTask(task.id, task).then(onSave);
-        } else {
-            createTask(task).then(onSave);
-        }
-    };
-
+export function TaskFormFields({ task, guests, handleChange, handleAssignedToChange }: TaskFormFieldsProps) {
     return (
-        <form onSubmit={handleSubmit}>
+        <>
             <div>
                 <label htmlFor="title">Title:</label>
                 <input
@@ -81,25 +52,25 @@ export default function AddTaskForm({ initialTask, onSave }: Readonly<TaskFormPr
                     onChange={handleChange}
                     required
                 >
-                    {taskStatuses.map(taskStatuses => (
-                        <option key={taskStatuses.value} value={taskStatuses.value}>{taskStatuses.label}</option>
+                    {taskStatuses.map(taskStatus => (
+                        <option key={taskStatus.value} value={taskStatus.value}>{taskStatus.label}</option>
                     ))}
                 </select>
             </div>
             <div>
                 <label htmlFor="assignedTo">Assigned To:</label>
-                <input
-                    type="text"
+                <select
                     id="assignedTo"
                     name="assignedTo"
+                    multiple
                     value={task.assignedTo}
-                    onChange={handleChange}
-                />
+                    onChange={handleAssignedToChange}
+                >
+                    {guests.map(guest => (
+                        <option key={guest.id} value={guest.id}>{guest.name}</option>
+                    ))}
+                </select>
             </div>
-            <button type="submit">Save</button>
-        </form>
+        </>
     );
 }
-
-
-

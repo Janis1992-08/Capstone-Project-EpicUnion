@@ -7,6 +7,8 @@ interface Modal {
     children: ReactNode;
 }
 
+
+
 export default function Modal({isVisible, onClose, children}: Readonly<Modal>) {
     return (
         <>

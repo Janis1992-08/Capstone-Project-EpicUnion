@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Guest, rsvpStatuses, Task} from "./FrontendSchema.ts";
-import {createGuest} from "../api/GuestService.ts";
-import {getTasks} from "../api/TaskService.ts";
+import {Guest, rsvpStatuses, Task} from "../FrontendSchema.ts";
+import {createGuest} from "../../api/GuestService.ts";
+import {getTasks} from "../../api/TaskService.ts";
 
 
 interface AddGuestFormProps {

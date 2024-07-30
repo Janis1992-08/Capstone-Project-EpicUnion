@@ -1,8 +1,10 @@
+import './styling/HomePage.css';
+
 export default function HomePage() {
     return (
-        <div>
-            <h1>Welcome to Epic Union</h1>
-            <nav>
+        <div className="homepage">
+            <h1 className="homepage__title">Welcome to Epic Union</h1>
+            <nav className="homepage__nav">
                 <ul>
                     <li><a href="/guests">Guests</a></li>
                     <li><a href="/tasks">Tasks</a></li>

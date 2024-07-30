@@ -5,6 +5,7 @@ import {deleteTask, getTaskById} from "./api/TaskService.ts";
 import Modal from "./components/Modal.tsx";
 import UpdateTaskForm from "./components/taskComponents/UpdateTaskForm.tsx";
 import {getGuests} from "./api/GuestService.ts";
+import './styling/TaskDetail.css';
 
 export default function TaskDetail() {
     const { id } = useParams<{ id: string }>();
@@ -63,23 +64,26 @@ export default function TaskDetail() {
     };
 
     return (
-        <div>
-            <h1>Task Detail</h1>
-            <ul>
-                <li key={task.id}>
-                    <h2>{task.title}</h2>
-                    <p>{task.description}</p>
-                    <p>Due Date: {task.dueDate}</p>
-                    <p>Status: {task.taskStatuses}</p>
-                    <p>Assigned To: {getGuestNames(task.assignedTo)}</p>
-                    <button onClick={openModal}>Update Task</button>
+        <div className="task-detail">
+            <div className="task-detail__header">
+                <h1 className="task-detail__title">Task Detail</h1>
+            </div>
+            <ul className="task-detail__list">
+                <li className="task-detail__list-item" key={task.id}>
+                    <h2 className="task-detail__task-title">{task.title}</h2>
+                    <p className="task-detail__task-description">{task.description}</p>
+                    <p className="task-detail__task-info">Due Date: {task.dueDate}</p>
+                    <p className="task-detail__task-info">Status: {task.taskStatuses}</p>
+                    <p className="task-detail__task-info">Assigned To: {getGuestNames(task.assignedTo)}</p>
+                    <button className="task-detail__button" onClick={openModal}>Update Task</button>
                     <Modal isVisible={isModalVisible} onClose={closeModal}>
-                        <UpdateTaskForm initialTask={task} onSave={handleTaskUpdate} guests={guests} />
+                        <UpdateTaskForm initialTask={task} onSave={handleTaskUpdate} guests={guests}/>
                     </Modal>
-                    <button onClick={handleDelete}>Delete</button>
+                    <button className="task-detail__button task-detail__button--delete" onClick={handleDelete}>Delete
+                    </button>
                 </li>
             </ul>
-            <Link to="/tasks">Back to Task List</Link>
+            <Link className="task-detail__back-link" to="/tasks">Back to Task List</Link>
         </div>
     );
 }

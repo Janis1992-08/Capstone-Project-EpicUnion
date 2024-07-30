@@ -5,6 +5,7 @@ import Modal from "./components/Modal.tsx";
 import AddTaskForm from "./components/taskComponents/AddTaskForm.tsx";
 import {Link} from "react-router-dom";
 import {getGuests} from "./api/GuestService.ts";
+import './styling/TaskManager.css';
 
 
 export default function TaskManager() {
@@ -41,27 +42,30 @@ export default function TaskManager() {
         }).join(', ');
     };
 
+
     return (
-        <div>
-            <button onClick={() => setIsModalVisible(true)}>Add Task</button>
+        <div className="task-manager">
+            <div className="task-manager__header">
+                <h1 className="task-manager__title">Task List</h1>
+            </div>
+            <button className="task-manager__button" onClick={() => setIsModalVisible(true)}>Add Task</button>
             <Modal isVisible={isModalVisible} onClose={() => setIsModalVisible(false)}>
-                <AddTaskForm onSave={handleTaskAdded} guests={guests} />
+                <AddTaskForm onSave={handleTaskAdded} guests={guests}/>
             </Modal>
-            <h1>Task List</h1>
-            <ul>
+            <ul className="task-manager__list">
                 {tasks.map(task => (
-                    <li key={task.id}>
+                    <li className="task-manager__list-item" key={task.id}>
                         <Link to={`/tasks/${task.id}`}>
-                            <h2>{task.title}</h2>
-                            <p>{task.description}</p>
-                            <p>Due Date: {task.dueDate}</p>
-                            <p>Status: {task.taskStatuses}</p>
-                            <p>Assigned To: {getGuestNames(task.assignedTo)}</p>
+                            <h2 className="task-manager__task-title">{task.title}</h2>
+                            <p className="task-manager__task-description">{task.description}</p>
+                            <p className="task-manager__task-info">Due Date: {task.dueDate}</p>
+                            <p className="task-manager__task-info">Status: {task.taskStatuses}</p>
+                            <p className="task-manager__task-info">Assigned To: {getGuestNames(task.assignedTo)}</p>
                         </Link>
                     </li>
                 ))}
             </ul>
-            <Link to="/">Back to Home Page</Link>
+            <Link className="task-manager__back-link" to="/">Back to Home Page</Link>
         </div>
     );
 }

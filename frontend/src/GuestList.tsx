@@ -36,24 +36,30 @@ export default function GuestList() {
 
     return (
         <div className="guest-list">
-            <button onClick={openModal}>ADD New Guest</button>
-            <Modal isVisible={isVisible} onClose={closeModal}>
-                <AddGuestForm onGuestAdded={handleGuestAdded}/>
-            </Modal>
-            <h1>Gästeliste</h1>
-            <ul>
+            <div className="guest-list__header">
+                <h1 className="guest-list__title">Gästeliste</h1>
+            </div>
+            <button className="guest-list__button" onClick={openModal}>ADD New Guest</button>
+            <div className="guest-list__modal">
+                <Modal isVisible={isVisible} onClose={closeModal}>
+                    <AddGuestForm onGuestAdded={handleGuestAdded}/>
+                </Modal>
+            </div>
+            <ul className="guest-list__list">
                 {guests.map(guest => (
-                    <li key={guest.id}>
-                        <Link to={`/guests/${guest.id}`}>
-                            <div>Name: {guest.name}</div>
-                            <div>Contact: {guest.email}</div>
-                            <div>Status: {guest.rsvpStatus}</div>
-                            <p>{guest.notes}</p>
-                            <ul>
-                                {(guest.assignedTasks || []).map(assignedTasks => {
-                                    const task = tasks.find(t => t.id === assignedTasks);
+                    <li className="guest-list__item" key={guest.id}>
+                        <Link className="guest-list__item-link" to={`/guests/${guest.id}`}>
+                            <div className="guest-list__guest-info">
+                                <div className="guest-list__guest-name">Name: {guest.name}</div>
+                                <div className="guest-list__guest-contact">Contact: {guest.email}</div>
+                                <div className="guest-list__guest-status">Status: {guest.rsvpStatus}</div>
+                                <p className="guest-list__guest-notes">{guest.notes}</p>
+                            </div>
+                            <ul className="guest-list__tasks">
+                                {(guest.assignedTasks || []).map(assignedTaskId => {
+                                    const task = tasks.find(t => t.id === assignedTaskId);
                                     return task ? (
-                                        <li key={task.id}>{task.title}</li>
+                                        <li className="guest-list__task-item" key={task.id}>{task.title}</li>
                                     ) : null;
                                 })}
                             </ul>
@@ -61,8 +67,8 @@ export default function GuestList() {
                     </li>
                 ))}
             </ul>
-            <Link to={"/"}>Back to Home Page</Link>
+            <Link className="guest-list__back-link" to={"/"}>Back to Home Page</Link>
         </div>
-    )
+    );
 
 }

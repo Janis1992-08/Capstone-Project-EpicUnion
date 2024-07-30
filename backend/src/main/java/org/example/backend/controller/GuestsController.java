@@ -50,4 +50,11 @@ public class GuestsController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{guestId}/tasks/remove/{taskId}")
+    public ResponseEntity<Void> removeTaskFromGuest(@PathVariable String guestId, @PathVariable String taskId) {
+        guestsService.removeTaskFromGuest(guestId, taskId);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

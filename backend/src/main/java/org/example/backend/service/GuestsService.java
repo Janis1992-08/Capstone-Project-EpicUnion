@@ -76,6 +76,27 @@ public class GuestsService {
         }
     }
 
+    public void removeTaskFromGuest(String guestId, String taskId) {
+        // Aktualisiere den Gast
+        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
+        List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
+        if (updatedTasks.contains(taskId)) {
+            updatedTasks.remove(taskId);
+            GuestsModel updatedGuest = guest.withAssignedTasks(updatedTasks); // Erstellen einer neuen Instanz mit aktualisierten Aufgaben
+            guestsRepo.save(updatedGuest);
+        }
+
+        // Aktualisiere die Aufgabe
+        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+        List<String> updatedGuests = new ArrayList<>(task.assignedTo());
+        if (updatedGuests.contains(guestId)) {
+            updatedGuests.remove(guestId);
+            TasksModel updatedTask = task.withAssignedTo(updatedGuests); // Erstellen einer neuen Instanz mit aktualisierten Gästen
+            tasksRepo.save(updatedTask);
+        }
+    }
+
+
 
 
 

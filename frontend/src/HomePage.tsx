@@ -1,4 +1,5 @@
 import './styling/HomePage.css';
+import {Link} from "react-router-dom";
 
 export default function HomePage() {
     return (
@@ -6,8 +7,8 @@ export default function HomePage() {
             <h1 className="homepage__title">Welcome to Epic Union</h1>
             <nav className="homepage__nav">
                 <ul>
-                    <li><a href="/guests">Guests</a></li>
-                    <li><a href="/tasks">Tasks</a></li>
+                    <li><Link to="/guests">Guests</Link></li>
+                    <li><Link to="/tasks">Tasks</Link></li>
                 </ul>
             </nav>
         </div>

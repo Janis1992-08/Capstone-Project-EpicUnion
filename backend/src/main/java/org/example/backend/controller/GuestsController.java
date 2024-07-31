@@ -46,8 +46,13 @@ public class GuestsController {
 
     @PutMapping("/{guestId}/tasks/{taskId}")
     public ResponseEntity<Void> assignTaskToGuest(@PathVariable String guestId, @PathVariable String taskId) {
-        guestsService.addTaskToGuest(guestId, taskId);
+        guestsService.assignTaskToGuest(guestId, taskId);
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{guestId}/tasks/remove/{taskId}")
+    public ResponseEntity<Void> removeTaskFromGuest(@PathVariable String guestId, @PathVariable String taskId) {
+        guestsService.removeTaskFromGuest(guestId, taskId);
+        return ResponseEntity.ok().build();
+    }
 }

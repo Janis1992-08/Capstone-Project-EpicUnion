@@ -2,7 +2,9 @@ package org.example.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dto.GuestDto;
 import org.example.backend.model.GuestsModel;
+import org.example.backend.model.TasksModel;
 import org.example.backend.repository.GuestsRepo;
+import org.example.backend.repository.TasksRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class GuestsService {
     private final GuestsRepo guestsRepo;
     private final IdService idService;
+    private final TasksRepo tasksRepo;
 
 
     public List<GuestsModel> getAllGuests() {
@@ -28,12 +31,14 @@ public class GuestsService {
     }
 
     public void addGuest(GuestDto guestDto) {
-        GuestsModel guests = new GuestsModel(idService.generateUUID(),
+        GuestsModel guests = new GuestsModel(
+                idService.generateUUID(),
                 guestDto.name(),
                 guestDto.email(),
                 guestDto.rsvpStatus(),
                 guestDto.notes(),
-                List.of());
+                guestDto.assignedTasks() != null ? guestDto.assignedTasks() : new ArrayList<>()
+        );
         guestsRepo.save(guests);
     }
 
@@ -42,7 +47,8 @@ public class GuestsService {
         updateGuest = updateGuest.withName(guestDto.name())
                 .withEmail(guestDto.email())
                 .withRsvpStatus(guestDto.rsvpStatus())
-                .withNotes(guestDto.notes());
+                .withNotes(guestDto.notes())
+                .withAssignedTasks(guestDto.assignedTasks() != null ? guestDto.assignedTasks() : new ArrayList<>());
         guestsRepo.save(updateGuest);
     }
 
@@ -52,13 +58,39 @@ public class GuestsService {
     }
 
 
-    public void addTaskToGuest(String guestId, String taskId) {
+    public void assignTaskToGuest(String guestId, String taskId) {
         GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
-        List<String> updatedTaskIds = new ArrayList<>(guest.taskIds());
-        updatedTaskIds.add(taskId);
-        guest = guest.withTaskIds(updatedTaskIds);
-        guestsRepo.save(guest);
+        List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
+        if (!updatedTasks.contains(taskId)) {
+            updatedTasks.add(taskId);
+            GuestsModel updatedGuest = guest.withAssignedTasks(updatedTasks);
+            guestsRepo.save(updatedGuest);
+        }
+
+        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+        List<String> updatedGuests = new ArrayList<>(task.assignedTo());
+        if (!updatedGuests.contains(guestId)) {
+            updatedGuests.add(guestId);
+            TasksModel updatedTask = task.withAssignedTo(updatedGuests);
+            tasksRepo.save(updatedTask);
+        }
     }
 
+    public void removeTaskFromGuest(String guestId, String taskId) {
+        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
+        List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
+        if (updatedTasks.contains(taskId)) {
+            updatedTasks.remove(taskId);
+            GuestsModel updatedGuest = guest.withAssignedTasks(updatedTasks);
+            guestsRepo.save(updatedGuest);
+        }
 
+        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+        List<String> updatedGuests = new ArrayList<>(task.assignedTo());
+        if (updatedGuests.contains(guestId)) {
+            updatedGuests.remove(guestId);
+            TasksModel updatedTask = task.withAssignedTo(updatedGuests);
+            tasksRepo.save(updatedTask);
+        }
+    }
 }

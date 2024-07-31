@@ -16,8 +16,7 @@ public record GuestsModel(
         String email,
         RsvpStatusModel rsvpStatus,
         String notes,
-        List<String> taskIds
-
+        List<String> assignedTasks
 ) {}
 
 

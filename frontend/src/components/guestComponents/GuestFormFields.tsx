@@ -1,43 +1,19 @@
-import React, {useState} from "react";
-import axios from "axios";
-import {rsvpStatuses} from "./FrontendSchema.ts";
+import React from 'react';
+import {rsvpStatuses} from "../FrontendSchema.ts";
 
-
-
-interface AddGuestFormProps {
-    onGuestAdded: () => void;
+interface GuestFormFieldsProps {
+    formData: {
+        name: string;
+        email: string;
+        rsvpStatus: string;
+        notes: string;
+    };
+    handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 }
 
-export default function AddGuestForm({onGuestAdded}: Readonly<AddGuestFormProps>) {
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        rsvpStatus: rsvpStatuses[0].value,
-        notes: ""
-    });
-
-    function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
-        });
-    }
-
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-
-        axios.post('/api/guests', formData).then(response => {
-            console.log('Guest added:', response.data);
-            onGuestAdded();
-            setFormData({name: '', email: '', rsvpStatus: rsvpStatuses[0].value, notes: ''});
-        })
-            .catch(error => console.error(error));
-
-    }
-
+export function GuestFormFields({ formData, handleChange }: GuestFormFieldsProps) {
     return (
-        <form onSubmit={handleSubmit} className="add-guest-form">
-            <h3>Neuen Gast hinzufügen</h3>
+        <>
             <div>
                 <label htmlFor="name">Name:</label>
                 <input
@@ -83,9 +59,6 @@ export default function AddGuestForm({onGuestAdded}: Readonly<AddGuestFormProps>
                     onChange={handleChange}
                 />
             </div>
-            <button type="submit">Hinzufügen</button>
-        </form>
+        </>
     );
-
-
 }

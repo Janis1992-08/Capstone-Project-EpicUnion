@@ -5,6 +5,8 @@ import lombok.With;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @With
 @Document(collection = "tasks")
 public record TasksModel(
@@ -14,6 +16,5 @@ public record TasksModel(
         String description,
         TasksStatusModel taskStatus,
         String dueDate,
-        String assignedTo
-) {
-}
+        List<String> assignedTo
+) {}

@@ -52,8 +52,4 @@ public class TasksController {
         tasksService.addGuestToTask(taskId, guestId);
         return ResponseEntity.ok().build();
     }
-
-
-
-
 }

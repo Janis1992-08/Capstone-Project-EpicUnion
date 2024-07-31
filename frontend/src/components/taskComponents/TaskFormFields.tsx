@@ -5,10 +5,12 @@ interface TaskFormFieldsProps {
     task: Task;
     guests: Guest[];
     handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-    handleAssignedToChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    handleAssignedToChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export function TaskFormFields({ task, guests, handleChange, handleAssignedToChange }: TaskFormFieldsProps) {
+
+
     return (
         <>
             <div>
@@ -44,11 +46,11 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToCha
                 />
             </div>
             <div>
-                <label htmlFor="taskStatuses">Task Status:</label>
+                <label htmlFor="taskStatus">Task Status:</label>
                 <select
-                    id="taskStatuses"
-                    name="taskStatuses"
-                    value={task.taskStatuses}
+                    id="taskStatus"
+                    name="taskStatus"
+                    value={task.taskStatus}
                     onChange={handleChange}
                     required
                 >
@@ -59,17 +61,20 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToCha
             </div>
             <div>
                 <label htmlFor="assignedTo">Assigned To:</label>
-                <select
-                    id="assignedTo"
-                    name="assignedTo"
-                    multiple
-                    value={task.assignedTo}
-                    onChange={handleAssignedToChange}
-                >
-                    {guests.map(guest => (
-                        <option key={guest.id} value={guest.id}>{guest.name}</option>
-                    ))}
-                </select>
+                {guests.map(guest => (
+                    <div key={guest.id}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="assignedTo"
+                                value={guest.id}
+                                checked={task.assignedTo.includes(guest.id)}
+                                onChange={handleAssignedToChange}
+                            />
+                            {guest.name}
+                        </label>
+                    </div>
+                ))}
             </div>
         </>
     );

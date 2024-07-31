@@ -17,5 +17,4 @@ public record TasksModel(
         TasksStatusModel taskStatus,
         String dueDate,
         List<String> assignedTo
-) {
-}
+) {}

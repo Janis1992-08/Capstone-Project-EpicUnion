@@ -13,7 +13,7 @@ export interface Task {
     id: string;
     title: string;
     description: string;
-    taskStatuses: string;
+    taskStatus: string;
     dueDate: string;
     assignedTo: string[];
 }
@@ -32,7 +32,7 @@ export const rsvpStatuses = [
 ];
 
 export const taskStatuses = [
-    { value: "TODO", label: "To Do" },
+    { value: "OPEN", label: "To Do" },
     { value: "IN_PROGRESS", label: "In Progress" },
     { value: "DONE", label: "Done" }
 ];

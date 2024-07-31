@@ -1,5 +1,3 @@
-/* GuestList.css */
-
 .guest-list {
     padding: 20px;
     max-width: 800px;
@@ -9,7 +7,6 @@
 
 .guest-list__header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }

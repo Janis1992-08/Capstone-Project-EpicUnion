@@ -55,6 +55,4 @@ public class GuestsController {
         guestsService.removeTaskFromGuest(guestId, taskId);
         return ResponseEntity.ok().build();
     }
-
-
 }

@@ -59,7 +59,7 @@ export default function TaskManager() {
                             <h2 className="task-manager__task-title">{task.title}</h2>
                             <p className="task-manager__task-description">{task.description}</p>
                             <p className="task-manager__task-info">Due Date: {task.dueDate}</p>
-                            <p className="task-manager__task-info">Status: {task.taskStatuses}</p>
+                            <p className="task-manager__task-info">Status: {task.taskStatus}</p>
                             <p className="task-manager__task-info">Assigned To: {getGuestNames(task.assignedTo)}</p>
                         </Link>
                     </li>

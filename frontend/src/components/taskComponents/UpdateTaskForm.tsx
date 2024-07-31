@@ -21,10 +21,14 @@ export default function UpdateTaskForm({ initialTask, onSave, guests }: UpdateTa
         setTask({ ...task, [name]: value });
     };
 
-    const handleAssignedToChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
-        console.log('Selected options:', selectedOptions); // Debugging-Zwecke
-        setTask({ ...task, assignedTo: selectedOptions });
+    const handleAssignedToChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event.target;
+        setTask(prevTask => ({
+            ...prevTask,
+            assignedTo: checked
+                ? [...prevTask.assignedTo, value]
+                : prevTask.assignedTo.filter(id => id !== value)
+        }));
     };
 
     const handleSubmit = (event: React.FormEvent) => {

@@ -1,5 +1,5 @@
 import {Guest, Task} from "./components/FrontendSchema.ts";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import './styling/GuestList.css';
 import AddGuestForm from "./components/guestComponents/AddGuestForm.tsx";
@@ -13,12 +13,12 @@ export default function GuestList() {
     const [guests, setGuests] = useState<Guest[]>([]);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isVisible, setIsVisible] = useState(false);
-
+    const [filter, setFilter] = useState<string>('');
 
     const fetchGuests = () => {
         getGuests().then(response => setGuests(response.data));
         getTasks().then(response => setTasks(response.data));
-    }
+    };
 
     useEffect(() => {
         fetchGuests();
@@ -32,6 +32,22 @@ export default function GuestList() {
         closeModal();
     };
 
+    const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFilter(event.target.value);
+    };
+
+    const filteredGuests = guests.filter(guest => {
+        const assignedTaskTitles = guest.assignedTasks
+            .map(taskId => tasks.find(task => task.id === taskId)?.title)
+            .filter(Boolean)
+            .join(', ')
+            .toLowerCase();
+
+        return guest.name.toLowerCase().includes(filter.toLowerCase()) ||
+            guest.email.toLowerCase().includes(filter.toLowerCase()) ||
+            guest.rsvpStatus.toLowerCase().includes(filter.toLowerCase()) ||
+            assignedTaskTitles.includes(filter.toLowerCase());
+    });
 
 
     return (
@@ -42,11 +58,19 @@ export default function GuestList() {
             <button className="guest-list__button" onClick={openModal}>ADD New Guest</button>
             <div className="guest-list__modal">
                 <Modal isVisible={isVisible} onClose={closeModal}>
-                    <AddGuestForm onGuestAdded={handleGuestAdded}/>
+                    <AddGuestForm onGuestAdded={handleGuestAdded} />
                 </Modal>
             </div>
+            <div >
+                <input
+                    type="text"
+                    placeholder="Filter guests..."
+                    value={filter}
+                    onChange={handleFilterChange}
+                />
+            </div>
             <ul className="guest-list__list">
-                {guests.map(guest => (
+                {filteredGuests.map(guest => (
                     <li className="guest-list__item" key={guest.id}>
                         <Link className="guest-list__item-link" to={`/guests/${guest.id}`}>
                             <div className="guest-list__guest-info">
@@ -67,8 +91,7 @@ export default function GuestList() {
                     </li>
                 ))}
             </ul>
-            <Link className="guest-list__back-link" to={"/"}>Back to Home Page</Link>
+            <Link className="guest-list__back-link" to="/">Back to Home Page</Link>
         </div>
     );
-
 }

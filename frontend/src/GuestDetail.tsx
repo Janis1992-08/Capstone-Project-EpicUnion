@@ -6,6 +6,7 @@ import UpdateGuestForm from "./components/guestComponents/UpdateGuestForm.tsx";
 import Modal from "./components/Modal.tsx";
 import { assignTaskToGuest, deleteGuest, getGuestById, removeTaskFromGuest } from "./api/GuestService.ts";
 import { getTasks } from "./api/TaskService.ts";
+import ConfirmModal from "./components/ConfirmModal.tsx";
 
 export default function GuestDetail() {
     const { id } = useParams<{ id: string }>();
@@ -13,6 +14,7 @@ export default function GuestDetail() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState(false);
+    const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
     const fetchGuest = useCallback(() => {
         if (id) {
@@ -42,22 +44,32 @@ export default function GuestDetail() {
 
     const handleTaskRemoval = (taskId: string) => {
         if (id) {
-            removeTaskFromGuest(id, taskId)
-                .then(() => fetchGuest())
-                .catch(error => {
-                    console.error('Error removing task from guest:', error);
-                    alert('Failed to remove task. Please try again.');
-                });
+            const confirmed = window.confirm('Are you sure you want to remove this task?');
+            if (confirmed) {
+                removeTaskFromGuest(id, taskId)
+                    .then(() => fetchGuest())
+                    .catch(error => {
+                        console.error('Error removing task from guest:', error);
+                        alert('Failed to remove task. Please try again.');
+                    });
+            }
         }
     };
 
     const handleDelete = () => {
-        if (id) {
-            deleteGuest(id).then(() => {
-                navigate('/guests');
-            });
-        }
+       setIsConfirmVisible(true);
     };
+
+    const confirmDelete = () => {
+        if (id) {
+            deleteGuest(id)
+                .then(() => navigate('/guests'))
+                .catch(error => {
+                    console.error('Error deleting guest:', error);
+                    alert('Failed to delete guest. Please try again.');
+                });
+        }
+    }
 
     const closeModal = () => setIsVisible(false);
     const openModal = () => setIsVisible(true);
@@ -117,6 +129,7 @@ export default function GuestDetail() {
                 </Modal>
             </div>
             <Link className="guest-detail__back-link" to={"/guests"}>Back to Guest List</Link>
+            <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)} onConfirm={confirmDelete} message={"Are you sure you want to delete this guest?"}/>
         </>
     );
 }

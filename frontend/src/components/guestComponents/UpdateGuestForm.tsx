@@ -14,6 +14,7 @@ export default function UpdateGuestForm({ guest, onGuestUpdate }: UpdateGuestFor
         email: guest.email,
         rsvpStatus: guest.rsvpStatus,
         notes: guest.notes,
+        assignedTasks: guest.assignedTasks
     });
 
 

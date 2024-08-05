@@ -6,6 +6,7 @@ import Modal from "./components/Modal.tsx";
 import UpdateTaskForm from "./components/taskComponents/UpdateTaskForm.tsx";
 import {getGuests} from "./api/GuestService.ts";
 import './styling/TaskDetail.css';
+import ConfirmModal from "./components/ConfirmModal.tsx";
 
 export default function TaskDetail() {
     const { id } = useParams<{ id: string }>();
@@ -13,6 +14,7 @@ export default function TaskDetail() {
     const [guests, setGuests] = useState<Guest[]>([]);
     const navigate = useNavigate();
     const [isModalVisible, setIsVisible] = useState(false);
+    const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
     const fetchTask = useCallback(() => {
         if (id) {
@@ -39,12 +41,19 @@ export default function TaskDetail() {
     }
 
     const handleDelete = () => {
-        if (id) {
-            deleteTask(id)
-                .then(() => navigate('/tasks'))
-                .catch(error => console.error(error));
-        }
+    setIsConfirmVisible(true);
     };
+
+    const confirmDelete = () => {
+        if (task) {
+            deleteTask(task.id)
+                .then(() => navigate('/tasks'))
+                .catch(error => {
+                    console.error('Error deleting task:', error);
+                    alert('Failed to delete task. Please try again.');
+                });
+        }
+    }
 
     const closeModal = () => setIsVisible(false);
     const openModal = () => setIsVisible(true);
@@ -98,7 +107,9 @@ export default function TaskDetail() {
                 </li>
             </ul>
         </div>
-    <Link className="task-detail__back-link" to="/tasks">Back to Task List</Link>
-    </>
+            <Link className="task-detail__back-link" to="/tasks">Back to Task List</Link>
+            <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)} onConfirm={confirmDelete} message={"Are you sure you want to delete this task?"}/>
+
+        </>
     );
 }

@@ -13,16 +13,18 @@ import org.example.backend.repository.GuestsRepo;
 import org.example.backend.repository.TasksRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@ExtendWith(MockitoExtension.class)
 class GuestsServiceTest {
 
     @Mock
@@ -42,7 +44,6 @@ class GuestsServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
 
         guestTestData = List.of(
                 new GuestsModel("1", "John Doe", "john.doe@example.com", RsvpStatusModel.CONFIRMED, "Notes", new ArrayList<>()),

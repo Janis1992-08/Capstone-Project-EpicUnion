@@ -91,7 +91,7 @@ export default function GuestList() {
                     </li>
                 ))}
             </ul>
-            <Link className="guest-list__back-link" to="/">Back to Home Page</Link>
+            <Link className="guest-list__back-link" to="/homepage">Back to Home Page</Link>
         </div>
     );
 }

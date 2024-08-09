@@ -86,7 +86,7 @@ export default function TaskList() {
                     </li>
                 ))}
             </ul>
-            <Link className="task-list__back-link" to="/">Back to Home Page</Link>
+            <Link className="task-list__back-link" to="/homepage">Back to Home Page</Link>
         </div>
     );
 }

@@ -19,21 +19,22 @@ public class TasksService {
     private final IdService idService;
 
 
-    public List<TasksModel> getAllTasks() {
-        return tasksRepo.findAll();
+    public List<TasksModel> getAllTasks(String userId) {
+        return tasksRepo.findAllByOwnerId(userId);
     }
 
-    public Optional<TasksModel> getTaskById(String id) {
-        return tasksRepo.findById(id);
+    public Optional<TasksModel> getTaskById(String taskId, String userId) {
+        return tasksRepo.findByIdAndOwnerId(taskId, userId);
     }
 
-    public TasksModel addTask(TasksDto tasksDto) {
+    public TasksModel addTask(TasksDto tasksDto, String userId) {
         TasksModel tasks = new TasksModel(idService.generateUUID(),
                 tasksDto.title(),
                 tasksDto.description(),
                 tasksDto.taskStatus(),
                 tasksDto.dueDate(),
-                tasksDto.assignedTo());
+                tasksDto.assignedTo(),
+                userId);
 
         tasksRepo.save(tasks);
 
@@ -48,8 +49,8 @@ public class TasksService {
         return tasks;
     }
 
-    public TasksModel updateTask(String id, TasksDto tasksDto) {
-        TasksModel updateTask = tasksRepo.findById(id).orElseThrow();
+    public TasksModel updateTask(String taskId, TasksDto tasksDto, String userId) {
+        TasksModel updateTask = tasksRepo.findByIdAndOwnerId(taskId, userId).orElseThrow();
         List<String> oldAssignedTo = updateTask.assignedTo();
 
         updateTask = updateTask.withTitle(tasksDto.title())
@@ -87,8 +88,8 @@ public class TasksService {
     }
 
 
-    public void deleteTask(String id) {
-        TasksModel taskToDelete = tasksRepo.findById(id).orElseThrow();
+    public void deleteTask(String taskId, String userId) {
+        TasksModel taskToDelete = tasksRepo.findByIdAndOwnerId(taskId, userId).orElseThrow();
 
         for (String guestId : taskToDelete.assignedTo()) {
             GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
@@ -98,17 +99,22 @@ public class TasksService {
             guestsRepo.save(updatedGuest);
         }
 
-        tasksRepo.deleteById(id);
+        tasksRepo.deleteById(taskId);
     }
 
 
-    public void addGuestToTask(String taskId, String guestId) {
-        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
-        List<String> assignedGuests = new ArrayList<>(task.assignedTo());
-        if (!assignedGuests.contains(guestId)) {
-            assignedGuests.add(guestId);
-            TasksModel updatedTask = task.withAssignedTo(assignedGuests);
+    public void addGuestToTask(String taskId, String guestId, String userId) {
+        TasksModel task = tasksRepo.findByIdAndOwnerId(taskId, userId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found or you're not authorized to modify this task"));
+
+        if (!task.assignedTo().contains(guestId)) {
+            List<String> newAssignedGuests = new ArrayList<>(task.assignedTo());
+            newAssignedGuests.add(guestId);
+            TasksModel updatedTask = task.withAssignedTo(newAssignedGuests);
             tasksRepo.save(updatedTask);
+        } else {
+            throw new IllegalStateException("Guest is already assigned to this task.");
         }
     }
+
 }

@@ -9,5 +9,6 @@ public record TasksDto(
         String description,
         TasksStatusModel taskStatus,
         String dueDate,
-        List<String> assignedTo
+        List<String> assignedTo,
+        String ownerId
 ) {}

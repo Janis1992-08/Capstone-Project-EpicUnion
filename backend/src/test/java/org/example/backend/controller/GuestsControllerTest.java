@@ -2,17 +2,20 @@ package org.example.backend.controller;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.backend.dto.GuestDto;
 import org.example.backend.model.GuestsModel;
 import org.example.backend.model.RsvpStatusModel;
 import org.example.backend.service.GuestsService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -31,23 +34,16 @@ class GuestsControllerTest {
     @MockBean
     private GuestsService mockGuestsService;
 
-    private List<GuestsModel> guestTestData;
+    private final String ownerId = "ownerId";
 
-    @BeforeEach
-    void setUp() {
-        guestTestData = List.of(
-                new GuestsModel("1", "John Doe", "john.doe@example.com", RsvpStatusModel.CONFIRMED, "Notes", List.of())
-        );
-    }
 
     @Test
+    @WithMockUser(username = ownerId)
     void getAllGuests() throws Exception {
+        List<GuestsModel> guests = List.of(new GuestsModel("1", "John Doe", "john.doe@example.com", RsvpStatusModel.CONFIRMED, "Notes", List.of(), ownerId));
+        when(mockGuestsService.getAllGuests(ownerId)).thenReturn(guests);
 
-        List<GuestsModel> expectedGuests = guestTestData;
-
-        when(mockGuestsService.getAllGuests()).thenReturn(expectedGuests);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/guests"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/guests").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                     [{
@@ -56,19 +52,21 @@ class GuestsControllerTest {
                         "email": "john.doe@example.com",
                         "rsvpStatus": "CONFIRMED",
                         "notes": "Notes",
-                        "assignedTasks": []
+                        "assignedTasks": [],
+                        "ownerId": "ownerId"
                     }]
                 """));
+
+        verify(mockGuestsService).getAllGuests(ownerId);
     }
 
     @Test
+    @WithMockUser(username = ownerId)
     void getGuestById() throws Exception {
+        Optional<GuestsModel> guest = Optional.of(new GuestsModel("1", "John Doe", "john.doe@example.com", RsvpStatusModel.CONFIRMED, "Notes", List.of(), ownerId));
+        when(mockGuestsService.getGuestById("1", ownerId)).thenReturn(guest);
 
-        GuestsModel expectedGuest = guestTestData.getFirst();
-
-        when(mockGuestsService.getGuestById("1")).thenReturn(Optional.of(expectedGuest));
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/guests/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/guests/1").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                     {
@@ -77,82 +75,93 @@ class GuestsControllerTest {
                         "email": "john.doe@example.com",
                         "rsvpStatus": "CONFIRMED",
                         "notes": "Notes",
-                        "assignedTasks": []
+                        "assignedTasks": [],
+                        "ownerId": "ownerId"
                     }
                 """));
+        verify(mockGuestsService).getGuestById("1", ownerId);
     }
 
     @Test
+    @WithMockUser(username = ownerId)
     void getGuestById_NotFound() throws Exception {
+        when(mockGuestsService.getGuestById("1", ownerId)).thenReturn(Optional.empty());
 
-        when(mockGuestsService.getGuestById("4")).thenReturn(Optional.empty());
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/guests/4"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/guests/1").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        verify(mockGuestsService).getGuestById("1", ownerId);
     }
 
     @Test
+    @WithMockUser(username = ownerId)
     void addGuest() throws Exception {
+
+        doNothing().when(mockGuestsService).addGuest(any(GuestDto.class), eq(ownerId));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/guests")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                     {
-                        "name": "Hans Meier",
-                        "email": "hans.meier@example.com",
+                        "name": "Alice Smith",
+                        "email": "alice@example.com",
                         "rsvpStatus": "PENDING",
-                        "notes": "Notes",
-                        "assignedTasks": []
+                        "notes": "Some notes",
+                        "assignedTasks": [],
+                        "ownerId": "ownerId"
                     }
-                """))
+                """)
+                        .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(mockGuestsService).addGuest(any(GuestDto.class));
+        verify(mockGuestsService).addGuest(any(GuestDto.class), eq(ownerId));
     }
 
+
     @Test
+    @WithMockUser(username = ownerId)
     void updateGuest() throws Exception {
+        GuestDto guestUpdate = new GuestDto("John Updated", "john.updated@example.com", RsvpStatusModel.CONFIRMED, "Updated notes", List.of(), ownerId);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/guests/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                    {
-                        "name": "John Doe",
-                        "email": "john.doe@example.com",
-                        "rsvpStatus": "PENDING",
-                        "notes": "Updated notes",
-                        "assignedTasks": []
-                    }
-                """))
+                        .content(new ObjectMapper().writeValueAsString(guestUpdate))
+                        .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(mockGuestsService).updateGuest(eq("1"), any(GuestDto.class));
+        verify(mockGuestsService).updateGuest("1", guestUpdate, ownerId);
     }
 
     @Test
+    @WithMockUser(username = ownerId)
     void deleteGuest() throws Exception {
+        doNothing().when(mockGuestsService).deleteGuest("1", ownerId);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/guests/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/guests/1").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(mockGuestsService).deleteGuest("1");
+        verify(mockGuestsService).deleteGuest("1", ownerId);
     }
 
     @Test
+    @WithMockUser(username = ownerId)
     void assignTaskToGuest() throws Exception {
+        doNothing().when(mockGuestsService).assignTaskToGuest("1", "task1", ownerId);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/guests/1/tasks/task1"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/guests/1/tasks/task1").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(mockGuestsService).assignTaskToGuest("1", "task1");
+        verify(mockGuestsService).assignTaskToGuest("1", "task1", ownerId);
     }
 
     @Test
+    @WithMockUser(username = ownerId)
     void removeTaskFromGuest() throws Exception {
+        doNothing().when(mockGuestsService).removeTaskFromGuest("1", "task1", ownerId);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/guests/1/tasks/remove/task1"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/guests/1/tasks/remove/task1").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(mockGuestsService).removeTaskFromGuest("1", "task1");
+        verify(mockGuestsService).removeTaskFromGuest("1", "task1", ownerId);
     }
 }

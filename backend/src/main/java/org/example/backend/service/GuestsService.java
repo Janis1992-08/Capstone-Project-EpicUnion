@@ -21,29 +21,31 @@ public class GuestsService {
     private final TasksRepo tasksRepo;
 
 
-    public List<GuestsModel> getAllGuests() {
-        return guestsRepo.findAll();
+    public List<GuestsModel> getAllGuests(String userId) {
+        return guestsRepo.findByOwnerId(userId);
     }
 
 
-    public Optional<GuestsModel> getGuestById(String id) {
-        return guestsRepo.findById(id);
+    public Optional<GuestsModel> getGuestById(String id, String userId) {
+        return guestsRepo.findByIdAndOwnerId(id, userId);
     }
 
-    public void addGuest(GuestDto guestDto) {
+
+    public void addGuest(GuestDto guestDto, String userId) {
         GuestsModel guests = new GuestsModel(
                 idService.generateUUID(),
                 guestDto.name(),
                 guestDto.email(),
                 guestDto.rsvpStatus(),
                 guestDto.notes(),
-                guestDto.assignedTasks() != null ? guestDto.assignedTasks() : new ArrayList<>()
+                guestDto.assignedTasks() != null ? guestDto.assignedTasks() : new ArrayList<>(),
+                userId
         );
         guestsRepo.save(guests);
     }
 
-    public void updateGuest(String id, GuestDto guestDto) {
-        GuestsModel updateGuest = guestsRepo.findById(id).orElseThrow();
+    public void updateGuest(String id, GuestDto guestDto, String userId) {
+        GuestsModel updateGuest = guestsRepo.findByIdAndOwnerId(id, userId).orElseThrow();
         updateGuest = updateGuest.withName(guestDto.name())
                 .withEmail(guestDto.email())
                 .withRsvpStatus(guestDto.rsvpStatus())
@@ -53,13 +55,18 @@ public class GuestsService {
     }
 
 
-    public void deleteGuest(String id) {
-        guestsRepo.deleteById(id);
+
+    public void deleteGuest(String id, String userId) {
+        GuestsModel guest = guestsRepo.findByIdAndOwnerId(id, userId).orElseThrow();
+        guestsRepo.delete(guest);
     }
 
 
-    public void assignTaskToGuest(String guestId, String taskId) {
-        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
+
+    public void assignTaskToGuest(String guestId, String taskId, String userId) {
+        GuestsModel guest = guestsRepo.findByIdAndOwnerId(guestId, userId).orElseThrow(() ->
+                new IllegalArgumentException("Guest not found or does not belong to the user"));
+
         List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
         if (!updatedTasks.contains(taskId)) {
             updatedTasks.add(taskId);
@@ -76,8 +83,10 @@ public class GuestsService {
         }
     }
 
-    public void removeTaskFromGuest(String guestId, String taskId) {
-        GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
+    public void removeTaskFromGuest(String guestId, String taskId, String userId) {
+        GuestsModel guest = guestsRepo.findByIdAndOwnerId(guestId, userId).orElseThrow(() ->
+                new IllegalArgumentException("Guest not found or does not belong to the user"));
+
         List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
         if (updatedTasks.contains(taskId)) {
             updatedTasks.remove(taskId);
@@ -93,4 +102,5 @@ public class GuestsService {
             tasksRepo.save(updatedTask);
         }
     }
+
 }

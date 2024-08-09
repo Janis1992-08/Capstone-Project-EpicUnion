@@ -16,5 +16,6 @@ public record TasksModel(
         String description,
         TasksStatusModel taskStatus,
         String dueDate,
-        List<String> assignedTo
+        List<String> assignedTo,
+        String ownerId
 ) {}

@@ -40,7 +40,7 @@ class GuestsServiceTest {
 
     private GuestsModel guest;
     private TasksModel task;
-    private String userId = "ownerId";
+    private final String userId = "ownerId";
 
     @BeforeEach
     void setUp() {

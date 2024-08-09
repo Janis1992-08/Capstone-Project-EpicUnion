@@ -35,6 +35,7 @@ public class MongoUserService implements UserDetailsService {
                 .id(UUID.randomUUID().toString())
                 .username(newUser.username())
                 .password(encoder.encode(newUser.password()))
+                .email(newUser.email())
                 .build();
         repo.save(user);
     }

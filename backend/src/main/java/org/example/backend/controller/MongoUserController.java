@@ -37,9 +37,7 @@ public class MongoUserController {
 
     @GetMapping("/logout")
     public void logout(HttpSession session){
-        //Session beenden!
         session.invalidate();
-        //SecurityContext löschen
         SecurityContextHolder.clearContext();
     }
 

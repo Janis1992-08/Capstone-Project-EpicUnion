@@ -18,7 +18,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8(); // Hashing Bcrypt, Argon2, Scrypt
+        return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
     }
 
     @Bean

@@ -12,39 +12,39 @@ import LoginPage from "./LoginPage.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 function App() {
-
-
-    const [user, setUser] = useState<string>("anonymousUser")
+    const [user, setUser] = useState<string>("anonymousUser");
 
     useEffect(() => {
         axios.get("/api/user")
-            .then((r) => setUser(r.data))
-    }, [])
+            .then(response => setUser(response.data))
+            .catch(() => setUser("anonymousUser"));
+    }, []);
 
-    function logout(){
+    function logout() {
         axios.get("/api/user/logout")
-            .then(() => setUser("anonymousUser"))
+            .then(() => setUser("anonymousUser"));
     }
 
-
-  return (
-    <>
-        <button onClick={logout}>Logout</button>
-      <div className="App">
-      <Routes>
-          <Route path="/" element={<RegisterPage/>}/>
-          <Route path="/login" element={<LoginPage setUser={setUser}/>}/>
-          <Route element={<ProtectedRoute user={user}/>}>
-          <Route path="/homepage" element={<HomePage/>}/>
-          <Route path="/guests" element={<GuestList/>}/>
-          <Route path="/guests/:id" element={<GuestDetail/>}/>
-          <Route path="/tasks" element={<TaskList/>}/>
-          <Route path="/tasks/:id" element={<TaskDetail/>}/>
-          </Route>
-        </Routes>
-      </div>
-    </>
-  )
+    return (
+        <>
+            <div className="App">
+                {user !== "anonymousUser" && (
+                    <button onClick={logout}>Logout</button>
+                )}
+                <Routes>
+                    <Route path="/" element={<RegisterPage />} />
+                    <Route path="/login" element={<LoginPage setUser={setUser} />} />
+                    <Route element={<ProtectedRoute user={user} />}>
+                        <Route path="/homepage" element={<HomePage />} />
+                        <Route path="/guests" element={<GuestList />} />
+                        <Route path="/guests/:id" element={<GuestDetail />} />
+                        <Route path="/tasks" element={<TaskList />} />
+                        <Route path="/tasks/:id" element={<TaskDetail />} />
+                    </Route>
+                </Routes>
+            </div>
+        </>
+    );
 }
 
-export default App
+export default App;

@@ -52,5 +52,7 @@ public class SuppliersController {
         String userId = authentication.getName();
         suppliersService.deleteSupplier(id, userId);
     }
+
+
 }
 

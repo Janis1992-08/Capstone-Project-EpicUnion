@@ -12,8 +12,10 @@ import java.util.List;
 public record GuestsModel(
         @Id
         String id,
-        String name,
+        String firstName,
+        String lastName,
         String email,
+        String phoneNumber,
         RsvpStatusModel rsvpStatus,
         String notes,
         List<String> assignedTasks,

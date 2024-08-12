@@ -5,7 +5,7 @@ import Modal from "./components/Modal.tsx";
 import AddTaskForm from "./components/taskComponents/AddTaskForm.tsx";
 import {Link} from "react-router-dom";
 import {getGuests} from "./api/GuestService.ts";
-import './styling/TaskList.css';
+import './styling/globals/ListPages.css';
 import {getSuppliers} from "./api/SupplierService.ts";
 
 
@@ -74,11 +74,11 @@ export default function TaskList() {
 
 
     return (
-        <div className="task-list">
-            <div className="task-list__header">
-                <h1 className="task-list__title">Task List</h1>
+        <div className="list-pages">
+            <div className="list-pages__header">
+                <h1 className="list-pages__title">Task List</h1>
             </div>
-            <button className="task-list__button" onClick={() => setIsModalVisible(true)}>Add Task</button>
+            <button className="list-pages__button" onClick={() => setIsModalVisible(true)}>Add Task</button>
             <Modal isVisible={isModalVisible} onClose={() => setIsModalVisible(false)}>
                 <AddTaskForm onSave={handleTaskAdded} guests={guests} suppliers={suppliers}/>
             </Modal>
@@ -90,21 +90,21 @@ export default function TaskList() {
             onChange={handleFilterChange}
             />
             </div>
-            <ul className="task-list__list">
+            <ul className="list-pages__list">
                 {filteredTasks.map(task => (
-                    <li className="task-list__list-item" key={task.id}>
+                    <li className="list-pages__list-item" key={task.id}>
                         <Link to={`/tasks/${task.id}`}>
-                            <h2 className="task-list__task-title">{task.title}</h2>
-                            <p className="task-list__task-description">{task.description}</p>
-                            <p className="task-list__task-info">Due Date: {task.dueDate}</p>
-                            <p className="task-list__task-info">Status: {task.taskStatus}</p>
-                            <p className="task-list__task-info">Assigned To: {getGuestNames(task.assignedToGuests)}</p>
-                            <p className="task-list__task-info">Suppliers: {getSupplierNames(task.assignedToSuppliers)}</p>
+                            <h2 className="list-pages__list-title">{task.title}</h2>
+                            <p className="list-pages__list-description">{task.description}</p>
+                            <p className="list-pages__list-info">Due Date: {task.dueDate}</p>
+                            <p className="list-pages__list-info">Status: {task.taskStatus}</p>
+                            <p className="list-pages__list-info">Assigned To: {getGuestNames(task.assignedToGuests)}</p>
+                            <p className="list-pages__list-info">Suppliers: {getSupplierNames(task.assignedToSuppliers)}</p>
                         </Link>
                     </li>
                 ))}
             </ul>
-            <Link className="task-list__back-link" to="/homepage">Back to Home Page</Link>
+            <Link className="list-pages__back-link" to="/homepage">Back to Home Page</Link>
         </div>
     );
 }

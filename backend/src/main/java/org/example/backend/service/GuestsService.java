@@ -7,10 +7,7 @@ import org.example.backend.repository.GuestsRepo;
 import org.example.backend.repository.TasksRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import java.util.*;
 
 
 @Service
@@ -31,76 +28,87 @@ public class GuestsService {
     }
 
 
-    public void addGuest(GuestDto guestDto, String userId) {
-        GuestsModel guests = new GuestsModel(
+    public GuestsModel addGuest(GuestDto guestDto, String userId) {
+        GuestsModel guest = new GuestsModel(
                 idService.generateUUID(),
-                guestDto.name(),
+                guestDto.firstName(),
+                guestDto.lastName(),
                 guestDto.email(),
+                guestDto.phoneNumber(),
                 guestDto.rsvpStatus(),
                 guestDto.notes(),
-                guestDto.assignedTasks() != null ? guestDto.assignedTasks() : new ArrayList<>(),
+                guestDto.assignedTasks(),
                 userId
         );
-        guestsRepo.save(guests);
+
+        guestsRepo.save(guest);
+
+        for (String taskId : guestDto.assignedTasks()) {
+            TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+            List<String> updatedGuest = new ArrayList<>(task.assignedToGuests());
+            updatedGuest.add(guest.id());
+            GuestsModel updatedTask = guest.withAssignedTasks(updatedGuest);
+            guestsRepo.save(updatedTask);
+        }
+
+        return guest;
     }
 
-    public void updateGuest(String id, GuestDto guestDto, String userId) {
-        GuestsModel updateGuest = guestsRepo.findByIdAndOwnerId(id, userId).orElseThrow();
-        updateGuest = updateGuest.withName(guestDto.name())
+
+    public GuestsModel updateGuest(String guestId, GuestDto guestDto, String userId) {
+        GuestsModel updateGuest = guestsRepo.findByIdAndOwnerId(guestId, userId).orElseThrow();
+        List<String> oldAssignedTo = updateGuest.assignedTasks();
+
+        updateGuest = updateGuest
+                .withFirstName(guestDto.firstName())
+                .withLastName(guestDto.lastName())
                 .withEmail(guestDto.email())
+                .withPhoneNumber(guestDto.phoneNumber())
                 .withRsvpStatus(guestDto.rsvpStatus())
                 .withNotes(guestDto.notes())
-                .withAssignedTasks(guestDto.assignedTasks() != null ? guestDto.assignedTasks() : new ArrayList<>());
+                .withAssignedTasks(guestDto.assignedTasks());
         guestsRepo.save(updateGuest);
-    }
 
+        Set<String> newAssignedTo = new HashSet<>(guestDto.assignedTasks());
+        Set<String> oldAssignedToSet = new HashSet<>(oldAssignedTo);
 
-
-    public void deleteGuest(String id, String userId) {
-        GuestsModel guest = guestsRepo.findByIdAndOwnerId(id, userId).orElseThrow();
-        guestsRepo.delete(guest);
-    }
-
-
-
-    public void assignTaskToGuest(String guestId, String taskId, String userId) {
-        GuestsModel guest = guestsRepo.findByIdAndOwnerId(guestId, userId).orElseThrow(() ->
-                new IllegalArgumentException("Guest not found or does not belong to the user"));
-
-        List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
-        if (!updatedTasks.contains(taskId)) {
-            updatedTasks.add(taskId);
-            GuestsModel updatedGuest = guest.withAssignedTasks(updatedTasks);
-            guestsRepo.save(updatedGuest);
+        for (String taskId : oldAssignedToSet) {
+            if (!newAssignedTo.contains(taskId)) {
+                TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+                List<String> updatedGuests = new ArrayList<>(task.assignedToGuests());
+                updatedGuests.remove(updateGuest.id());
+                TasksModel updatedTask = task.withAssignedToGuests(updatedGuests);
+                tasksRepo.save(updatedTask);
+            }
         }
 
-        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
-        List<String> updatedGuests = new ArrayList<>(task.assignedToGuests());
-        if (!updatedGuests.contains(guestId)) {
-            updatedGuests.add(guestId);
-            TasksModel updatedTask = task.withAssignedToGuests(updatedGuests);
+        for (String taskId : newAssignedTo) {
+            if (!oldAssignedTo.contains(taskId)) {
+                TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+                List<String> updatedGuests = new ArrayList<>(task.assignedToGuests());
+                updatedGuests.add(updateGuest.id());
+                TasksModel updatedTask = task.withAssignedToGuests(updatedGuests);
+                tasksRepo.save(updatedTask);
+            }
+        }
+
+        return updateGuest;
+    }
+
+
+    public void deleteGuest(String guestId, String userId) {
+        GuestsModel guestToDelete = guestsRepo.findByIdAndOwnerId(guestId, userId).orElseThrow();
+
+        for (String taskId : guestToDelete.assignedTasks()) {
+            TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+            List<String> updatedGuest = new ArrayList<>(task.assignedToGuests());
+            updatedGuest.remove(guestToDelete.id());
+            TasksModel updatedTask = task.withAssignedToGuests(updatedGuest);
             tasksRepo.save(updatedTask);
         }
+
+        guestsRepo.deleteById(guestId);
     }
 
-    public void removeTaskFromGuest(String guestId, String taskId, String userId) {
-        GuestsModel guest = guestsRepo.findByIdAndOwnerId(guestId, userId).orElseThrow(() ->
-                new IllegalArgumentException("Guest not found or does not belong to the user"));
-
-        List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
-        if (updatedTasks.contains(taskId)) {
-            updatedTasks.remove(taskId);
-            GuestsModel updatedGuest = guest.withAssignedTasks(updatedTasks);
-            guestsRepo.save(updatedGuest);
-        }
-
-        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
-        List<String> updatedGuests = new ArrayList<>(task.assignedToGuests());
-        if (updatedGuests.contains(guestId)) {
-            updatedGuests.remove(guestId);
-            TasksModel updatedTask = task.withAssignedToGuests(updatedGuests);
-            tasksRepo.save(updatedTask);
-        }
-    }
 
 }

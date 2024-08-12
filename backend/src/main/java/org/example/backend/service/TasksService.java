@@ -134,6 +134,14 @@ public class TasksService {
             guestsRepo.save(updatedGuest);
         }
 
+        for (String supplierId : taskToDelete.assignedToSuppliers()) {
+            SuppliersModel supplier = suppliersRepo.findById(supplierId).orElseThrow();
+            List<String> updatedTasks = new ArrayList<>(supplier.assignedTasks());
+            updatedTasks.remove(taskToDelete.id());
+            supplier = supplier.withAssignedTasks(updatedTasks);
+            suppliersRepo.save(supplier);
+        }
+
         tasksRepo.deleteById(taskId);
     }
 

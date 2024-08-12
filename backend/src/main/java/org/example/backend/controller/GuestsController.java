@@ -1,16 +1,15 @@
 package org.example.backend.controller;
-
-
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dto.GuestDto;
 import org.example.backend.model.GuestsModel;
 import org.example.backend.service.GuestsService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -31,16 +30,20 @@ public class GuestsController {
         return guest.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
     @PostMapping
-    public void addGuest(@RequestBody GuestDto guestDto, Authentication authentication) {
+    public ResponseEntity<GuestsModel> addGuest(@RequestBody GuestDto guestDto, Authentication authentication) {
         String userId = authentication.getName();
-        guestsService.addGuest(guestDto, userId);
+        GuestsModel newGuest = guestsService.addGuest(guestDto, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newGuest);
     }
 
+
     @PutMapping("/{id}")
-    public void updateGuest(@PathVariable String id, @RequestBody GuestDto guestDto, Authentication authentication) {
+    public ResponseEntity<GuestsModel> updateGuest(@PathVariable String id, @RequestBody GuestDto guestDto, Authentication authentication) {
         String userId = authentication.getName();
-        guestsService.updateGuest(id, guestDto, userId);
+        GuestsModel updatedGuest = guestsService.updateGuest(id, guestDto, userId);
+        return ResponseEntity.ok(updatedGuest);
     }
 
     @DeleteMapping("/{id}")
@@ -49,19 +52,6 @@ public class GuestsController {
         guestsService.deleteGuest(id, userId);
     }
 
-    @PutMapping("/{guestId}/tasks/{taskId}")
-    public ResponseEntity<Void> assignTaskToGuest(@PathVariable String guestId, @PathVariable String taskId, Authentication authentication) {
-        String userId = authentication.getName();
-        guestsService.assignTaskToGuest(guestId, taskId, userId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{guestId}/tasks/remove/{taskId}")
-    public ResponseEntity<Void> removeTaskFromGuest(@PathVariable String guestId, @PathVariable String taskId, Authentication authentication) {
-        String userId = authentication.getName();
-        guestsService.removeTaskFromGuest(guestId, taskId, userId);
-        return ResponseEntity.ok().build();
-    }
 
 
 }

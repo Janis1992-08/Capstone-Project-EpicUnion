@@ -5,7 +5,7 @@ import Modal from "./components/Modal.tsx";
 import ConfirmModal from "./components/ConfirmModal.tsx";
 import {deleteSupplier, getSupplierById} from "./api/SupplierService.ts";
 import UpdateSuppliersForm from "./components/supplierComponents/UpdateSuppliersForm.tsx";
-import "./styling/SupplierDetail.css";
+import './styling/globals/DetailsPages.css';
 import {getTasks} from "./api/TaskService.ts";
 
 
@@ -74,7 +74,7 @@ export default function SupplierDetail() {
 
                     return (
                         <span key={tasksId}>
-                                <Link to={`/tasks/${tasksId}`} className="supplier-detail__task-link">
+                                <Link to={`/tasks/${tasksId}`}>
                                     {task.title}
                                 </Link>
                             {index < tasksIds.length - 1 && ', '}
@@ -87,33 +87,33 @@ export default function SupplierDetail() {
 
     return (
         <>
-            <div className="supplier-detail">
-                <div className="supplier-detail__header">
-                    <h1 className="supplier-detail__title">Supplier Details</h1>
+            <div className="details-pages">
+                <div className="details-pages__header">
+                    <h1 className="details-pages__title">Supplier Details</h1>
                 </div>
-                <ul className="supplier-detail__list">
-                    <li className="supplier-detail__list-item" key={supplier.id}>
-                        <h2 className="supplier-detail__supplier-title">Name: {supplier.name}</h2>
-                        <p className="supplier-detail__supplier-description">Description: {supplier.description}</p>
-                        <p className="supplier-detail__supplier-info">Website: {supplier.websiteUrl}</p>
-                        <p className="supplier-detail__supplier-info">Costs: {supplier.costs}</p>
-                        <p className="supplier-detail__supplier-info">Delivery Date: {supplier.deliveryDate}</p>
-                        <p className="supplier-detail__supplier-info">Phone: {supplier.contactPhone}</p>
-                        <p className="supplier-detail__supplier-info">Email {supplier.contactEmail}</p>
-                        <p className="supplier-detail__supplier-info">Address {supplier.contactAddress}</p>
-                        <p className="supplier-detail__supplier-info">Tasks: {getTaskNames(supplier.assignedTasks)}</p>
-                        <button className="supplier-detail__button" onClick={openModal}>Update Supplier</button>
+                <ul className="details-pages__list">
+                    <li className="details-pages__list-item" key={supplier.id}>
+                        <h2 className="details-pages__list-title">Name: {supplier.name}</h2>
+                        <p className="details-pages__list-description">Description: {supplier.description}</p>
+                        <p className="details-pages__list-info">Website: {supplier.websiteUrl}</p>
+                        <p className="details-pages__list-info">Costs: {supplier.costs}</p>
+                        <p className="details-pages__list-info">Delivery Date: {supplier.deliveryDate}</p>
+                        <p className="details-pages__list-info">Phone: {supplier.contactPhone}</p>
+                        <p className="details-pages__list-info">Email: {supplier.contactEmail}</p>
+                        <p className="details-pages__list-info">Address: {supplier.contactAddress}</p>
+                        <p className="details-pages__list-info">Tasks: {getTaskNames(supplier.assignedTasks)}</p>
+                        <button className="details-pages__button" onClick={openModal}>Update Supplier</button>
                         <Modal isVisible={isVisible} onClose={closeModal}>
                             <UpdateSuppliersForm initialSupplier={supplier} onSave={handleSupplierUpdate} tasks={tasks}/>
                         </Modal>
-                        <button className="supplier-detail__button supplier-detail__button--delete"
+                        <button className="details-pages__button details-pages__button--delete"
                                 onClick={handleDelete}>Delete Supplier
                         </button>
                     </li>
                 </ul>
             </div>
             <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)} onConfirm={confirmDelete} message={"Are you sure you want to delete this supplier?"} />
-            <Link className="supplier-detail__back-link" to="/suppliers">Back to Supplier List</Link>
+            <Link className="details-pages__back-link" to="/suppliers">Back to Supplier List</Link>
         </>
     );
 }

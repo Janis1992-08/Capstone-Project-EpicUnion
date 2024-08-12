@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Modal from "./components/Modal.tsx";
 import {getSuppliers} from "./api/SupplierService.ts";
 import AddSupplierForm from "./components/supplierComponents/AddSupplierForm.tsx";
-import "./styling/SupplierList.css"
+import './styling/globals/ListPages.css';
 import {getTasks} from "./api/TaskService.ts";
 
 export default function SupplierList() {
@@ -62,11 +62,11 @@ export default function SupplierList() {
     });
 
     return (
-        <div className="supplier-list">
-            <div className="supplier-list__header">
-            <h1 className="supplier-list__title">Suppliers</h1>
+        <div className="list-pages">
+            <div className="list-pages__header">
+            <h1 className="list-pages__title">Suppliers</h1>
             </div>
-            <button className="supplier-list__button" onClick={openModal}>Add New Supplier</button>
+            <button className="list-pages__button" onClick={openModal}>Add New Supplier</button>
             <Modal isVisible={isVisible} onClose={closeModal}>
                 <AddSupplierForm onSave={handleSupplierAdded} tasks={tasks} />
             </Modal>
@@ -78,21 +78,21 @@ export default function SupplierList() {
                 onChange={handleFilterChange}
             />
             </div>
-            <ul className="supplier-list__list">
+            <ul className="list-pages__list">
                 {filteredSuppliers.map(supplier => (
-                    <li key={supplier.id} className="supplier-list__list-item">
+                    <li key={supplier.id} className="list-pages__list-item">
                         <Link to={`/suppliers/${supplier.id}`}>
-                            <h2 className="supplier-list__supplier-title">{supplier.name} </h2>
-                            <p className="supplier-list__supplier-description">{supplier.description}</p>
-                            <p className="supplier-list__supplier-info">Costs: {supplier.costs}</p>
-                            <p className="supplier-list__supplier-info">Delivery Date: {supplier.deliveryDate}</p>
-                            <p className="supplier-list__supplier-info">Email: {supplier.contactEmail}</p>
-                            <p className="supplier-list__supplier-info">Tasks: {getTaskNames(supplier.assignedTasks)}</p>
+                            <h2 className="list-pages__list-title">{supplier.name} </h2>
+                            <p className="list-pages__list-description">{supplier.description}</p>
+                            <p className="list-pages__list-info">Costs: {supplier.costs}</p>
+                            <p className="list-pages__list-info">Delivery Date: {supplier.deliveryDate}</p>
+                            <p className="list-pages__list-info">Email: {supplier.contactEmail}</p>
+                            <p className="list-pages__list-info">Tasks: {getTaskNames(supplier.assignedTasks)}</p>
                         </Link>
                     </li>
                 ))}
             </ul>
-            <Link className="supplier-list__back-link" to="/homepage">Back to Home Page</Link>
+            <Link className="list-pages__back-link" to="/homepage">Back to Home Page</Link>
         </div>
     );
 }

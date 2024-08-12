@@ -1,26 +1,34 @@
 import React from 'react';
-import {rsvpStatuses} from "../FrontendSchema.ts";
+import {Guest, rsvpStatuses, Task} from "../FrontendSchema.ts";
 
 interface GuestFormFieldsProps {
-    formData: {
-        name: string;
-        email: string;
-        rsvpStatus: string;
-        notes: string;
-    };
+    formData: Guest;
+    tasks: Task[];
+    handleAssignedToTask: (event: React.ChangeEvent<HTMLInputElement>) => void;
     handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 }
 
-export function GuestFormFields({ formData, handleChange }: GuestFormFieldsProps) {
+export function GuestFormFields({ formData, handleChange , tasks, handleAssignedToTask}: GuestFormFieldsProps) {
     return (
         <>
             <div>
-                <label htmlFor="name">Name:</label>
+                <label htmlFor="firstName">First Name:</label>
                 <input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
+            <div>
+                <label htmlFor="lastName">Last Name:</label>
+                <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
                     onChange={handleChange}
                     required
                 />
@@ -34,6 +42,17 @@ export function GuestFormFields({ formData, handleChange }: GuestFormFieldsProps
                     value={formData.email}
                     onChange={handleChange}
                     required
+                />
+            </div>
+            <div>
+                <label htmlFor={"phone"}>Phone:</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+
                 />
             </div>
             <div>
@@ -58,6 +77,23 @@ export function GuestFormFields({ formData, handleChange }: GuestFormFieldsProps
                     value={formData.notes}
                     onChange={handleChange}
                 />
+            </div>
+            <div>
+                <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
+                {tasks.map(task => (
+                    <div key={task.id}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="handleAssignedToTask"
+                                value={task.id}
+                                checked={formData.assignedTasks.includes(task.id)}
+                                onChange={handleAssignedToTask}
+                            />
+                            {task.title}
+                        </label>
+                    </div>
+                ))}
             </div>
         </>
     );

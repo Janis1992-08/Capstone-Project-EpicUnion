@@ -104,9 +104,19 @@ public class SuppliersService {
     }
 
 
-    public void deleteSupplier(String id, String userId) {
-        SuppliersModel supplier = supplierRepo.findByIdAndOwnerId(id, userId).orElseThrow();
-        supplierRepo.delete(supplier);
+    public void deleteSupplier(String supplierId, String userId) {
+        SuppliersModel supplierToDelete = supplierRepo.findByIdAndOwnerId(supplierId, userId).orElseThrow();
+
+        for (String taskId : supplierToDelete.assignedTasks()) {
+            TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+            List<String> updatedSupplier = new ArrayList<>(task.assignedToSuppliers());
+            updatedSupplier.remove(supplierToDelete.id());
+            TasksModel updatedTask = task.withAssignedToSuppliers(updatedSupplier);
+            tasksRepo.save(updatedTask);
+        }
+
+        supplierRepo.deleteById(supplierId);
     }
+
 }
 

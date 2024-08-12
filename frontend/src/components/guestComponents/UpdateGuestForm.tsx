@@ -1,22 +1,21 @@
-import React, { useState} from "react";
-import {Guest} from "../FrontendSchema.ts";
+import React, {useEffect, useState} from "react";
+import {Guest, Task} from "../FrontendSchema.ts";
 import {updateGuest} from "../../api/GuestService.ts";
 import {GuestFormFields} from "./GuestFormFields.tsx";
 
 interface UpdateGuestFormProps {
     guest: Guest;
-    onGuestUpdate: () => void;
+    tasks: Task[];
+    onSave: () => void;
 }
 
-export default function UpdateGuestForm({ guest, onGuestUpdate }: UpdateGuestFormProps) {
-    const [formData, setFormData] = useState({
-        name: guest.name,
-        email: guest.email,
-        rsvpStatus: guest.rsvpStatus,
-        notes: guest.notes,
-        assignedTasks: guest.assignedTasks
-    });
+export default function UpdateGuestForm({ guest, onSave, tasks }: UpdateGuestFormProps) {
+    const [formData, setFormData] = useState<Guest>(guest);
 
+
+    useEffect(() => {
+        setFormData(guest);
+    }, [guest]);
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
         const { name, value } = event.target;
@@ -26,16 +25,23 @@ export default function UpdateGuestForm({ guest, onGuestUpdate }: UpdateGuestFor
         }));
     }
 
+    const handleAssignedToTask = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event.target;
+        setFormData(prevTask => ({
+            ...prevTask,
+            assignedTasks: checked
+                ? [...prevTask.assignedTasks, value]
+                : prevTask.assignedTasks.filter(id => id !== value)
+        }));
+    };
+
+
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        updateGuest(guest.id, formData)
-            .then(response => {
-                console.log('Guest updated:', response.data);
-                onGuestUpdate();
-            })
-            .catch(error => console.error('Error updating guest:', error));
+        updateGuest(guest.id, formData).then(onSave);
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="update-guest-form">
@@ -43,6 +49,8 @@ export default function UpdateGuestForm({ guest, onGuestUpdate }: UpdateGuestFor
             <GuestFormFields
                 formData={formData}
                 handleChange={handleChange}
+                tasks={tasks}
+                handleAssignedToTask={handleAssignedToTask}
             />
             <button type="submit">Update</button>
         </form>

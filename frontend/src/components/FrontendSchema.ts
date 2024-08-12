@@ -18,6 +18,20 @@ export interface Task {
     assignedTo: string[];
 }
 
+export interface Supplier {
+    id: string;
+    name: string;
+    description: string;
+    websiteUrl: string;
+    costs: number;
+    deliveryDate: string;
+    assignedTasks: string[];
+    contactEmail: string;
+    contactPhone: string;
+    contactAddress: string;
+}
+
+
 export interface GuestForm {
     name: string;
     email: string;

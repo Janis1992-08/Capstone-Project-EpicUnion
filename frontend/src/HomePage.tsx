@@ -9,6 +9,7 @@ export default function HomePage() {
                 <ul>
                     <li><Link to="/guests">Guests</Link></li>
                     <li><Link to="/tasks">Tasks</Link></li>
+                    <li><Link to="/suppliers">Suppliers</Link></li>
                 </ul>
             </nav>
         </div>

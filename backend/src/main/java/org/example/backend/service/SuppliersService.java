@@ -40,7 +40,9 @@ public class SuppliersService {
                 suppliersDto.costs(),
                 suppliersDto.deliveryDate(),
                 suppliersDto.assignedTasks() != null ? suppliersDto.assignedTasks() : new ArrayList<>(),
-                suppliersDto.contactInfo() != null ? suppliersDto.contactInfo() : new ArrayList<>(),
+                suppliersDto.contactEmail(),
+                suppliersDto.contactPhone(),
+                suppliersDto.contactAddress(),
                 userId
         );
         supplierRepo.save(supplier);
@@ -55,7 +57,9 @@ public class SuppliersService {
                 .withCosts(suppliersDto.costs())
                 .withDeliveryDate(suppliersDto.deliveryDate())
                 .withAssignedTasks(suppliersDto.assignedTasks() != null ? suppliersDto.assignedTasks() : new ArrayList<>())
-                .withContactInfo(suppliersDto.contactInfo() != null ? suppliersDto.contactInfo() : new ArrayList<>());
+                .withContactEmail(suppliersDto.contactEmail())
+                .withContactPhone(suppliersDto.contactPhone())
+                .withContactAddress(suppliersDto.contactAddress());
         supplierRepo.save(updateSupplier);
     }
 

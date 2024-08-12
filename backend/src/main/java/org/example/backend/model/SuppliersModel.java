@@ -17,6 +17,8 @@ public record SuppliersModel(
         Double costs,
         String deliveryDate,
         List<String> assignedTasks,
-        List<String> contactInfo,
+        String contactEmail,
+        String contactPhone,
+        String contactAddress,
         String ownerId
 ) {}

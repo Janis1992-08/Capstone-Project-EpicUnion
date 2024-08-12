@@ -119,14 +119,14 @@ export default function GuestDetail() {
                     </select>
                 </div>
                 <div className="guest-detail__buttons">
+                    <button className="guest-detail__button" onClick={openModal}>Update Guest</button>
+                    <Modal isVisible={isVisible} onClose={closeModal}>
+                        <UpdateGuestForm guest={guest} onGuestUpdate={handleGuestUpdate}/>
+                    </Modal>
                     <button className="guest-detail__button guest-detail__button--delete" onClick={handleDelete}>Delete
                         Guest
                     </button>
-                    <button className="guest-detail__button" onClick={openModal}>Update Guest</button>
                 </div>
-                <Modal isVisible={isVisible} onClose={closeModal}>
-                    <UpdateGuestForm guest={guest} onGuestUpdate={handleGuestUpdate}/>
-                </Modal>
             </div>
             <Link className="guest-detail__back-link" to={"/guests"}>Back to Guest List</Link>
             <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)} onConfirm={confirmDelete} message={"Are you sure you want to delete this guest?"}/>

@@ -10,7 +10,9 @@ public record SuppliersDto(
         Double costs,
         String deliveryDate,
         List<String> assignedTasks,
-        List<String> contactInfo,
+        String contactEmail,
+        String contactPhone,
+        String contactAddress,
         String ownerId
 ) {
 }

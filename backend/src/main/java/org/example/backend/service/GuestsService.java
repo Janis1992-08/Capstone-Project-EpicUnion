@@ -75,10 +75,10 @@ public class GuestsService {
         }
 
         TasksModel task = tasksRepo.findById(taskId).orElseThrow();
-        List<String> updatedGuests = new ArrayList<>(task.assignedTo());
+        List<String> updatedGuests = new ArrayList<>(task.assignedToGuests());
         if (!updatedGuests.contains(guestId)) {
             updatedGuests.add(guestId);
-            TasksModel updatedTask = task.withAssignedTo(updatedGuests);
+            TasksModel updatedTask = task.withAssignedToGuests(updatedGuests);
             tasksRepo.save(updatedTask);
         }
     }
@@ -95,10 +95,10 @@ public class GuestsService {
         }
 
         TasksModel task = tasksRepo.findById(taskId).orElseThrow();
-        List<String> updatedGuests = new ArrayList<>(task.assignedTo());
+        List<String> updatedGuests = new ArrayList<>(task.assignedToGuests());
         if (updatedGuests.contains(guestId)) {
             updatedGuests.remove(guestId);
-            TasksModel updatedTask = task.withAssignedTo(updatedGuests);
+            TasksModel updatedTask = task.withAssignedToGuests(updatedGuests);
             tasksRepo.save(updatedTask);
         }
     }

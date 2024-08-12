@@ -15,7 +15,8 @@ export interface Task {
     description: string;
     taskStatus: string;
     dueDate: string;
-    assignedTo: string[];
+    assignedToGuests: string[];
+    assignedToSuppliers: string[];
 }
 
 export interface Supplier {

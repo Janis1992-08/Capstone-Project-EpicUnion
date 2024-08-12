@@ -1,14 +1,16 @@
 import React from 'react';
-import {Guest, Task, taskStatuses} from "../FrontendSchema.ts";
+import {Guest, Supplier, Task, taskStatuses} from "../FrontendSchema.ts";
 
 interface TaskFormFieldsProps {
     task: Task;
     guests: Guest[];
+    suppliers: Supplier[];
     handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-    handleAssignedToChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleAssignedToGuests: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleAssignedToSuppliers: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function TaskFormFields({ task, guests, handleChange, handleAssignedToChange }: TaskFormFieldsProps) {
+export function TaskFormFields({ task, guests, handleChange, handleAssignedToGuests, handleAssignedToSuppliers, suppliers }: TaskFormFieldsProps) {
 
 
     return (
@@ -60,18 +62,35 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToCha
                 </select>
             </div>
             <div>
-                <label htmlFor="assignedTo">Assigned To:</label>
+                <label htmlFor="assignedToGuests">Assigned Guests:</label>
                 {guests.map(guest => (
                     <div key={guest.id}>
                         <label>
                             <input
                                 type="checkbox"
-                                name="assignedTo"
+                                name="assignedToGuests"
                                 value={guest.id}
-                                checked={task.assignedTo.includes(guest.id)}
-                                onChange={handleAssignedToChange}
+                                checked={task.assignedToGuests.includes(guest.id)}
+                                onChange={handleAssignedToGuests}
                             />
                             {guest.name}
+                        </label>
+                    </div>
+                ))}
+            </div>
+            <div>
+                <label htmlFor="assignedToSuppliers">Assigned Suppliers:</label>
+                {suppliers.map(supplier => (
+                    <div key={supplier.id}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="assignedToSuppliers"
+                                value={supplier.id}
+                                checked={task.assignedToSuppliers.includes(supplier.id)}
+                                onChange={handleAssignedToSuppliers}
+                            />
+                            {supplier.name}
                         </label>
                     </div>
                 ))}

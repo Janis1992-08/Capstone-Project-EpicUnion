@@ -3,8 +3,10 @@ package org.example.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dto.SuppliersDto;
 import org.example.backend.model.SuppliersModel;
+import org.example.backend.model.TasksModel;
 import org.example.backend.repository.SuppliersRepo;
 
+import org.example.backend.repository.TasksRepo;
 import org.springframework.stereotype.Service;
 
 
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class SuppliersService {
 
     private final SuppliersRepo supplierRepo;
+    private final TasksRepo tasksRepo;
     private final IdService idService;
 
 
@@ -67,6 +70,46 @@ public class SuppliersService {
     public void deleteSupplier(String id, String userId) {
         SuppliersModel supplier = supplierRepo.findByIdAndOwnerId(id, userId).orElseThrow();
         supplierRepo.delete(supplier);
+    }
+
+    public void assignTaskToSupplier(String supplierId, String taskId, String userId) {
+        SuppliersModel supplier = supplierRepo.findByIdAndOwnerId(supplierId, userId).orElseThrow(() ->
+                new IllegalArgumentException("Supplier not found or does not belong to the user"));
+
+        List<String> updatedTasks = new ArrayList<>(supplier.assignedTasks());
+        if (!updatedTasks.contains(taskId)) {
+            updatedTasks.add(taskId);
+            SuppliersModel updatedSupplier = supplier.withAssignedTasks(updatedTasks);
+            supplierRepo.save(updatedSupplier);
+        }
+
+        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+        List<String> updatedSuppliers = new ArrayList<>(task.assignedToSuppliers());
+        if (!updatedSuppliers.contains(supplierId)) {
+            updatedSuppliers.add(supplierId);
+            TasksModel updatedTask = task.withAssignedToSuppliers(updatedSuppliers);
+            tasksRepo.save(updatedTask);
+        }
+    }
+
+    public void removeTaskFromSupplier(String supplierId, String taskId, String userId) {
+        SuppliersModel supplier = supplierRepo.findByIdAndOwnerId(supplierId, userId).orElseThrow(() ->
+                new IllegalArgumentException("Guest not found or does not belong to the user"));
+
+        List<String> updatedTasks = new ArrayList<>(supplier.assignedTasks());
+        if (updatedTasks.contains(taskId)) {
+            updatedTasks.remove(taskId);
+            SuppliersModel updatedSupplier = supplier.withAssignedTasks(updatedTasks);
+            supplierRepo.save(updatedSupplier);
+        }
+
+        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+        List<String> updatedSuppliers = new ArrayList<>(task.assignedToSuppliers());
+        if (updatedSuppliers.contains(supplierId)) {
+            updatedSuppliers.remove(supplierId);
+            TasksModel updatedTask = task.withAssignedToSuppliers(updatedSuppliers);
+            tasksRepo.save(updatedTask);
+        }
     }
 
 

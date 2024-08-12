@@ -50,6 +50,20 @@ public class SuppliersController {
         suppliersService.deleteSupplier(id, userId);
     }
 
+    @PutMapping("/{supplierId}/tasks/{taskId}")
+    public ResponseEntity<Void> assignTaskToSupplier(@PathVariable String supplierId, @PathVariable String taskId, Authentication authentication) {
+        String userId = authentication.getName();
+        suppliersService.assignTaskToSupplier(supplierId, taskId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{supplierId}/tasks/remove/{taskId}")
+    public ResponseEntity<Void> removeTaskFromSupplier(@PathVariable String supplierId, @PathVariable String taskId, Authentication authentication) {
+        String userId = authentication.getName();
+        suppliersService.removeTaskFromSupplier(supplierId, taskId, userId);
+        return ResponseEntity.ok().build();
+    }
+
 
 
 }

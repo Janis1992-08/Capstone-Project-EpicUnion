@@ -1,17 +1,19 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
 import React, {useCallback, useEffect, useState} from "react";
-import {Guest, Task} from "./components/FrontendSchema.ts";
+import {Guest, Supplier, Task} from "./components/FrontendSchema.ts";
 import {deleteTask, getTaskById} from "./api/TaskService.ts";
 import Modal from "./components/Modal.tsx";
 import UpdateTaskForm from "./components/taskComponents/UpdateTaskForm.tsx";
 import {getGuests} from "./api/GuestService.ts";
 import './styling/TaskDetail.css';
 import ConfirmModal from "./components/ConfirmModal.tsx";
+import {getSuppliers} from "./api/SupplierService.ts";
 
 export default function TaskDetail() {
     const { id } = useParams<{ id: string }>();
     const [task, setTask] = useState<Task | undefined>();
     const [guests, setGuests] = useState<Guest[]>([]);
+    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const navigate = useNavigate();
     const [isModalVisible, setIsVisible] = useState(false);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
@@ -31,10 +33,17 @@ export default function TaskDetail() {
             .catch(error => console.error(error));
     }, []);
 
+    const fetchSuppliers = useCallback(() => {
+        getSuppliers()
+            .then(response => setSuppliers(response.data))
+            .catch(error => console.error(error));
+    }, []);
+
     useEffect(() => {
         fetchTask();
         fetchGuests();
-    }, [fetchTask, fetchGuests]);
+        fetchSuppliers();
+    }, [fetchTask, fetchGuests, fetchSuppliers]);
 
     if (!task) {
         return <p>Loading...</p>;
@@ -85,6 +94,28 @@ export default function TaskDetail() {
         );
     };
 
+    const getSupplierNames = (suppliersIds: string[]): React.ReactElement => {
+        if (suppliersIds.length === 0) return <span>Unassigned</span>;
+
+        return (
+            <>
+                {suppliersIds.map((supplierId, index) => {
+                    const supplier = suppliers.find(s => s.id === supplierId);
+                    if (!supplier) return null;
+
+                    return (
+                        <span key={supplierId}>
+                                <Link to={`/suppliers/${supplierId}`} className="task-detail__guest-link">
+                                    {supplier.name}
+                                </Link>
+                            {index < suppliersIds.length - 1 && ', '}
+                            </span>
+                    );
+                })}
+            </>
+        );
+    }
+
     return (
         <>
         <div className="task-detail">
@@ -97,10 +128,11 @@ export default function TaskDetail() {
                     <p className="task-detail__task-description">{task.description}</p>
                     <p className="task-detail__task-info ">Due Date: {task.dueDate}</p>
                     <p className="task-detail__task-info">Status: {task.taskStatus}</p>
-                    <p className="task-detail__task-info">Assigned To: {getGuestNames(task.assignedTo)}</p>
+                    <p className="task-detail__task-info">Assigned To: {getGuestNames(task.assignedToGuests)}</p>
+                    <p className="task-detail__task-info">Suppliers: {getSupplierNames(task.assignedToSuppliers)}</p>
                     <button className="task-detail__button" onClick={openModal}>Update Task</button>
                     <Modal isVisible={isModalVisible} onClose={closeModal}>
-                        <UpdateTaskForm initialTask={task} onSave={handleTaskUpdate} guests={guests}/>
+                        <UpdateTaskForm initialTask={task} onSave={handleTaskUpdate} guests={guests} suppliers={suppliers}/>
                     </Modal>
                     <button className="task-detail__button task-detail__button--delete" onClick={handleDelete}>Delete
                     </button>

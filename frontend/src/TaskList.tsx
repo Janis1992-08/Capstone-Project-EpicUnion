@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { getTasks} from "./api/TaskService.ts";
-import {Guest, Task} from "./components/FrontendSchema.ts";
+import {Guest, Supplier, Task} from "./components/FrontendSchema.ts";
 import Modal from "./components/Modal.tsx";
 import AddTaskForm from "./components/taskComponents/AddTaskForm.tsx";
 import {Link} from "react-router-dom";
 import {getGuests} from "./api/GuestService.ts";
 import './styling/TaskList.css';
+import {getSuppliers} from "./api/SupplierService.ts";
 
 
 export default function TaskList() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [guests, setGuests] = useState<Guest[]>([]);
+    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [filter, setFilter] = useState<string>('');
 
@@ -26,9 +28,16 @@ export default function TaskList() {
             .catch(error => console.error(error));
     };
 
+    const fetchSuppliers = () => {
+        getSuppliers()
+            .then(response => setSuppliers(response.data))
+            .catch(error => console.error(error));
+    };
+
     useEffect(() => {
         fetchTasks();
         fetchGuests();
+        fetchSuppliers();
     }, []);
 
     const handleTaskAdded = () => {
@@ -43,6 +52,13 @@ export default function TaskList() {
         }).join(', ');
     };
 
+    const getSupplierNames = (suppliersIds: string[]) => {
+        return suppliersIds.map(suppliersId => {
+            const supplier = suppliers.find(s => s.id === suppliersId);
+            return supplier ? supplier.name : 'Unassigned';
+        }).join(', ');
+    };
+
     const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFilter(event.target.value);
     }
@@ -52,7 +68,8 @@ export default function TaskList() {
         task.description.toLowerCase().includes(filter.toLowerCase()) ||
         task.dueDate.toLowerCase().includes(filter.toLowerCase()) ||
         task.taskStatus.toLowerCase().includes(filter.toLowerCase()) ||
-        getGuestNames(task.assignedTo).toLowerCase().includes(filter.toLowerCase())
+        getGuestNames(task.assignedToGuests).toLowerCase().includes(filter.toLowerCase()) ||
+        getSupplierNames(task.assignedToSuppliers).toLowerCase().includes(filter.toLowerCase())
     );
 
 
@@ -63,7 +80,7 @@ export default function TaskList() {
             </div>
             <button className="task-list__button" onClick={() => setIsModalVisible(true)}>Add Task</button>
             <Modal isVisible={isModalVisible} onClose={() => setIsModalVisible(false)}>
-                <AddTaskForm onSave={handleTaskAdded} guests={guests}/>
+                <AddTaskForm onSave={handleTaskAdded} guests={guests} suppliers={suppliers}/>
             </Modal>
             <div >
             <input
@@ -81,7 +98,8 @@ export default function TaskList() {
                             <p className="task-list__task-description">{task.description}</p>
                             <p className="task-list__task-info">Due Date: {task.dueDate}</p>
                             <p className="task-list__task-info">Status: {task.taskStatus}</p>
-                            <p className="task-list__task-info">Assigned To: {getGuestNames(task.assignedTo)}</p>
+                            <p className="task-list__task-info">Assigned To: {getGuestNames(task.assignedToGuests)}</p>
+                            <p className="task-list__task-info">Suppliers: {getSupplierNames(task.assignedToSuppliers)}</p>
                         </Link>
                     </li>
                 ))}

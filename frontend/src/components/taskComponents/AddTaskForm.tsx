@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Guest, Task, taskStatuses} from "../FrontendSchema.ts";
+import {Guest, Supplier, Task, taskStatuses} from "../FrontendSchema.ts";
 import {createTask} from "../../api/TaskService.ts";
 import {TaskFormFields} from "./TaskFormFields.tsx";
 
@@ -7,16 +7,19 @@ import {TaskFormFields} from "./TaskFormFields.tsx";
 interface AddTaskFormProps {
     onSave: () => void;
     guests: Guest[];
+    suppliers: Supplier[];
 }
 
-export default function AddTaskForm({ onSave, guests }: AddTaskFormProps) {
+export default function AddTaskForm({ onSave, guests, suppliers }: AddTaskFormProps) {
     const [task, setTask] = useState<Task>({
         id: '',
         title: '',
         description: '',
         dueDate: '',
         taskStatus: taskStatuses[0].value,
-        assignedTo: []
+        assignedToGuests: [],
+        assignedToSuppliers: []
+
     });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -24,13 +27,25 @@ export default function AddTaskForm({ onSave, guests }: AddTaskFormProps) {
         setTask({ ...task, [name]: value });
     };
 
-    const handleAssignedToChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAssignedToGuests = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
         setTask(prevTask => ({
             ...prevTask,
-            assignedTo: checked
-                ? [...prevTask.assignedTo, value]
-                : prevTask.assignedTo.filter(id => id !== value)
+            assignedToGuests: checked
+                ? [...prevTask.assignedToGuests, value]
+                : prevTask.assignedToGuests.filter(id => id !== value)
+        }));
+    };
+
+
+
+    const handleAssignedToSuppliers = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event.target;
+        setTask(prevTask => ({
+            ...prevTask,
+            assignedToSuppliers: checked
+                ? [...prevTask.assignedToSuppliers, value]
+                : prevTask.assignedToSuppliers.filter(id => id !== value)
         }));
     };
 
@@ -44,8 +59,10 @@ export default function AddTaskForm({ onSave, guests }: AddTaskFormProps) {
             <TaskFormFields
                 task={task}
                 guests={guests}
+                suppliers={suppliers}
                 handleChange={handleChange}
-                handleAssignedToChange={handleAssignedToChange}
+                handleAssignedToGuests={handleAssignedToGuests}
+                handleAssignedToSuppliers={handleAssignedToSuppliers}
             />
             <button type="submit">Save</button>
         </form>

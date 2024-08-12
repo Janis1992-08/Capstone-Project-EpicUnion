@@ -38,7 +38,6 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    required
                 />
             </div>
             <div>
@@ -49,7 +48,6 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     name="websiteUrl"
                     value={formData.websiteUrl}
                     onChange={handleChange}
-                    required
                 />
             </div>
             <div>
@@ -82,7 +80,7 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     name="contactEmail"
                     value={formData.contactEmail}
                     onChange={handleChange}
-                    required
+
                 />
             </div>
             <div>
@@ -104,18 +102,6 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     value={formData.contactAddress}
                     onChange={handleChange}
                 />
-            </div>
-            <div>
-                <label htmlFor="assignedTasks">Assigned Tasks:</label>
-                <select
-                    id="assignedTasks"
-                    name="assignedTasks"
-                    multiple
-                    value={formData.assignedTasks}
-                    onChange={handleChange}
-                >
-                    {/* Dynamically populate tasks here */}
-                </select>
             </div>
         </>
     );

@@ -48,7 +48,7 @@ export default function TaskList() {
     const getGuestNames = (guestIds: string[]) => {
         return guestIds.map(guestId => {
             const guest = guests.find(g => g.id === guestId);
-            return guest ? guest.name : 'Unassigned';
+            return guest ? guest.firstName : 'Unassigned';
         }).join(', ');
     };
 

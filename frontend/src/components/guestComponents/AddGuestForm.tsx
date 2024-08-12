@@ -12,8 +12,10 @@ interface AddGuestFormProps {
 export default function AddGuestForm({ onSave, tasks }: Readonly<AddGuestFormProps>) {
     const [formData, setFormData] = useState<Guest>({
         id: '',
-        name: "",
+        firstName: "",
+        lastName: "",
         email: "",
+        phoneNumber: "",
         rsvpStatus: rsvpStatuses[0].value,
         notes: "",
         assignedTasks: []

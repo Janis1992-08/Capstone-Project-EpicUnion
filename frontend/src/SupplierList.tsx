@@ -68,7 +68,7 @@ export default function SupplierList() {
             </div>
             <button className="supplier-list__button" onClick={openModal}>Add New Supplier</button>
             <Modal isVisible={isVisible} onClose={closeModal}>
-                <AddSupplierForm onSave={handleSupplierAdded} />
+                <AddSupplierForm onSave={handleSupplierAdded} tasks={tasks} />
             </Modal>
             <div >
             <input

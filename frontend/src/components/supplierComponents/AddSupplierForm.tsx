@@ -1,15 +1,16 @@
-import { Supplier} from "../FrontendSchema.ts";
+import {Supplier, Task} from "../FrontendSchema.ts";
 import React, {useState} from "react";
 import {createSupplier} from "../../api/SupplierService.ts";
 import {SupplierFormFields} from "./SupplierFormFields.tsx";
 
 interface AddSupplierFormProps {
     onSave: () => void;
+    tasks: Task[];
 }
 
 
-export default function AddSupplierForm({ onSave }: Readonly<AddSupplierFormProps>) {
-    const [formData, setFormData] = useState<Supplier>({
+export default function AddSupplierForm({ onSave, tasks }: Readonly<AddSupplierFormProps>) {
+    const [supplier, setSupplier] = useState<Supplier>({
         id: '',
         name: "",
         description: "",
@@ -25,22 +26,32 @@ export default function AddSupplierForm({ onSave }: Readonly<AddSupplierFormProp
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
         const { name, value } = event.target;
-        setFormData(prevState => ({
+        setSupplier(prevState => ({
             ...prevState,
             [name]: value
         }));
     }
 
+    const handleAssignedToTask = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event.target;
+        setSupplier(prevTask => ({
+            ...prevTask,
+            assignedTasks: checked
+                ? [...prevTask.assignedTasks, value]
+                : prevTask.assignedTasks.filter(id => id !== value)
+        }));
+    };
+
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        createSupplier(formData).then(onSave);
+        createSupplier(supplier).then(onSave);
     };
 
     return (
         <form onSubmit={handleSubmit} className="add-supplier-form">
             <h3>Add new Supplier</h3>
-            <SupplierFormFields formData={formData} handleChange={handleChange}/>
+            <SupplierFormFields supplier={supplier} handleChange={handleChange} handleAssignedToTask={handleAssignedToTask} tasks={tasks}/>
             <button type="submit">Hinzufügen</button>
         </form>
     );

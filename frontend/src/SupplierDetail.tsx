@@ -104,7 +104,7 @@ export default function SupplierDetail() {
                         <p className="supplier-detail__supplier-info">Tasks: {getTaskNames(supplier.assignedTasks)}</p>
                         <button className="supplier-detail__button" onClick={openModal}>Update Supplier</button>
                         <Modal isVisible={isVisible} onClose={closeModal}>
-                            <UpdateSuppliersForm initialSupplier={supplier} onSave={handleSupplierUpdate}/>
+                            <UpdateSuppliersForm initialSupplier={supplier} onSave={handleSupplierUpdate} tasks={tasks}/>
                         </Modal>
                         <button className="supplier-detail__button supplier-detail__button--delete"
                                 onClick={handleDelete}>Delete Supplier

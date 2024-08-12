@@ -1,22 +1,15 @@
 import React from "react";
+import {Supplier, Task} from "../FrontendSchema.ts";
 
 
 interface SupplierFormFieldsProps {
-    formData: {
-        name: string;
-        description: string;
-        websiteUrl: string;
-        costs: number;
-        deliveryDate: string;
-        assignedTasks: string[];
-        contactEmail: string,
-        contactPhone: string,
-        contactAddress: string
-    };
+    supplier: Supplier;
+    tasks: Task[];
+    handleAssignedToTask: (event: React.ChangeEvent<HTMLInputElement>) => void;
     handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 }
 
-export function SupplierFormFields({ formData, handleChange }: SupplierFormFieldsProps) {
+export function SupplierFormFields({ supplier, handleChange, tasks, handleAssignedToTask }: SupplierFormFieldsProps) {
     return (
         <>
             <div>
@@ -25,7 +18,7 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     type="text"
                     id="name"
                     name="name"
-                    value={formData.name}
+                    value={supplier.name}
                     onChange={handleChange}
                     required
                 />
@@ -36,7 +29,7 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     type="text"
                     id="description"
                     name="description"
-                    value={formData.description}
+                    value={supplier.description}
                     onChange={handleChange}
                 />
             </div>
@@ -46,7 +39,7 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     type="text"
                     id="websiteUrl"
                     name="websiteUrl"
-                    value={formData.websiteUrl}
+                    value={supplier.websiteUrl}
                     onChange={handleChange}
                 />
             </div>
@@ -56,7 +49,7 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     type="number"
                     id="costs"
                     name="costs"
-                    value={formData.costs.toString()}
+                    value={supplier.costs.toString()}
                     onChange={handleChange}
                     required
                 />
@@ -67,7 +60,7 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     type="date"
                     id="deliveryDate"
                     name="deliveryDate"
-                    value={formData.deliveryDate}
+                    value={supplier.deliveryDate}
                     onChange={handleChange}
                     required
                 />
@@ -78,7 +71,7 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     type="email"
                     id="contactEmail"
                     name="contactEmail"
-                    value={formData.contactEmail}
+                    value={supplier.contactEmail}
                     onChange={handleChange}
 
                 />
@@ -89,7 +82,7 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     type="tel"
                     id="contactPhone"
                     name="contactPhone"
-                    value={formData.contactPhone}
+                    value={supplier.contactPhone}
                     onChange={handleChange}
                 />
             </div>
@@ -99,9 +92,26 @@ export function SupplierFormFields({ formData, handleChange }: SupplierFormField
                     type="text"
                     id="contactAddress"
                     name="contactAddress"
-                    value={formData.contactAddress}
+                    value={supplier.contactAddress}
                     onChange={handleChange}
                 />
+            </div>
+            <div>
+                <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
+                {tasks.map(task => (
+                    <div key={task.id}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="handleAssignedToTask"
+                                value={task.id}
+                                checked={supplier.assignedTasks.includes(task.id)}
+                                onChange={handleAssignedToTask}
+                            />
+                            {task.title}
+                        </label>
+                    </div>
+                ))}
             </div>
         </>
     );

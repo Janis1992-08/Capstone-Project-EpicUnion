@@ -33,7 +33,7 @@ public class TasksService {
     }
 
     public TasksModel addTask(TasksDto tasksDto, String userId) {
-        TasksModel tasks = new TasksModel(idService.generateUUID(),
+        TasksModel task = new TasksModel(idService.generateUUID(),
                 tasksDto.title(),
                 tasksDto.description(),
                 tasksDto.taskStatus(),
@@ -42,12 +42,12 @@ public class TasksService {
                 tasksDto.assignedToSuppliers(),
                 userId);
 
-        tasksRepo.save(tasks);
+        tasksRepo.save(task);
 
         for (String guestId : tasksDto.assignedToGuests()) {
             GuestsModel guest = guestsRepo.findById(guestId).orElseThrow();
             List<String> updatedTasks = new ArrayList<>(guest.assignedTasks());
-            updatedTasks.add(tasks.id());
+            updatedTasks.add(task.id());
             GuestsModel updatedGuest = guest.withAssignedTasks(updatedTasks);
             guestsRepo.save(updatedGuest);
         }
@@ -55,12 +55,12 @@ public class TasksService {
         for (String supplierId : tasksDto.assignedToSuppliers()) {
             SuppliersModel supplier = suppliersRepo.findById(supplierId).orElseThrow(() -> new NoSuchElementException("Supplier not found."));
             List<String> updatedTasks = new ArrayList<>(supplier.assignedTasks());
-            updatedTasks.add(tasks.id());
+            updatedTasks.add(task.id());
             supplier = supplier.withAssignedTasks(updatedTasks);
             suppliersRepo.save(supplier);
         }
 
-        return tasks;
+        return task;
     }
 
     public TasksModel updateTask(String taskId, TasksDto tasksDto, String userId) {

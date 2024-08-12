@@ -10,10 +10,7 @@ import org.example.backend.repository.TasksRepo;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +31,8 @@ public class SuppliersService {
 
 
 
-    public void addSupplier(SuppliersDto suppliersDto, String userId) {
+
+    public SuppliersModel addSupplier(SuppliersDto suppliersDto, String userId) {
         SuppliersModel supplier = new SuppliersModel(
                 idService.generateUUID(),
                 suppliersDto.name(),
@@ -42,28 +40,67 @@ public class SuppliersService {
                 suppliersDto.websiteUrl(),
                 suppliersDto.costs(),
                 suppliersDto.deliveryDate(),
-                suppliersDto.assignedTasks() != null ? suppliersDto.assignedTasks() : new ArrayList<>(),
+                suppliersDto.assignedTasks(),
                 suppliersDto.contactEmail(),
                 suppliersDto.contactPhone(),
                 suppliersDto.contactAddress(),
-                userId
-        );
+                userId);
+
         supplierRepo.save(supplier);
+
+        for (String taskId : suppliersDto.assignedTasks()) {
+            TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+            List<String> updatedSuppliers = new ArrayList<>(task.assignedToSuppliers());
+            updatedSuppliers.add(supplier.id());
+            TasksModel updatedTask = task.withAssignedToSuppliers(updatedSuppliers);
+            tasksRepo.save(updatedTask);
+        }
+
+        return supplier;
     }
 
 
-    public void updateSupplier(String id, SuppliersDto suppliersDto, String userId) {
-        SuppliersModel updateSupplier = supplierRepo.findByIdAndOwnerId(id, userId).orElseThrow();
+
+    public SuppliersModel updateSupplier(String supplierId, SuppliersDto suppliersDto, String userId) {
+        SuppliersModel updateSupplier = supplierRepo.findByIdAndOwnerId(supplierId, userId).orElseThrow();
+        List<String> oldAssignedTo = updateSupplier.assignedTasks();
+
         updateSupplier = updateSupplier.withName(suppliersDto.name())
                 .withDescription(suppliersDto.description())
                 .withWebsiteUrl(suppliersDto.websiteUrl())
                 .withCosts(suppliersDto.costs())
                 .withDeliveryDate(suppliersDto.deliveryDate())
-                .withAssignedTasks(suppliersDto.assignedTasks() != null ? suppliersDto.assignedTasks() : new ArrayList<>())
+                .withAssignedTasks(suppliersDto.assignedTasks())
                 .withContactEmail(suppliersDto.contactEmail())
                 .withContactPhone(suppliersDto.contactPhone())
                 .withContactAddress(suppliersDto.contactAddress());
+
         supplierRepo.save(updateSupplier);
+
+        Set<String> newAssignedTo = new HashSet<>(suppliersDto.assignedTasks());
+        Set<String> oldAssignedToSet = new HashSet<>(oldAssignedTo);
+
+        for (String taskId : oldAssignedToSet) {
+            if (!newAssignedTo.contains(taskId)) {
+                TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+                List<String> updatedSuppliers = new ArrayList<>(task.assignedToSuppliers());
+                updatedSuppliers.remove(updateSupplier.id());
+                TasksModel updatedTask = task.withAssignedToSuppliers(updatedSuppliers);
+                tasksRepo.save(updatedTask);
+            }
+        }
+
+        for (String taskId : newAssignedTo) {
+            if (!oldAssignedTo.contains(taskId)) {
+                TasksModel task = tasksRepo.findById(taskId).orElseThrow();
+                List<String> updatedSuppliers = new ArrayList<>(task.assignedToSuppliers());
+                updatedSuppliers.add(updateSupplier.id());
+                TasksModel updatedTask = task.withAssignedToSuppliers(updatedSuppliers);
+                tasksRepo.save(updatedTask);
+            }
+        }
+
+        return updateSupplier;
     }
 
 
@@ -71,49 +108,5 @@ public class SuppliersService {
         SuppliersModel supplier = supplierRepo.findByIdAndOwnerId(id, userId).orElseThrow();
         supplierRepo.delete(supplier);
     }
-
-    public void assignTaskToSupplier(String supplierId, String taskId, String userId) {
-        SuppliersModel supplier = supplierRepo.findByIdAndOwnerId(supplierId, userId).orElseThrow(() ->
-                new IllegalArgumentException("Supplier not found or does not belong to the user"));
-
-        List<String> updatedTasks = new ArrayList<>(supplier.assignedTasks());
-        if (!updatedTasks.contains(taskId)) {
-            updatedTasks.add(taskId);
-            SuppliersModel updatedSupplier = supplier.withAssignedTasks(updatedTasks);
-            supplierRepo.save(updatedSupplier);
-        }
-
-        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
-        List<String> updatedSuppliers = new ArrayList<>(task.assignedToSuppliers());
-        if (!updatedSuppliers.contains(supplierId)) {
-            updatedSuppliers.add(supplierId);
-            TasksModel updatedTask = task.withAssignedToSuppliers(updatedSuppliers);
-            tasksRepo.save(updatedTask);
-        }
-    }
-
-    public void removeTaskFromSupplier(String supplierId, String taskId, String userId) {
-        SuppliersModel supplier = supplierRepo.findByIdAndOwnerId(supplierId, userId).orElseThrow(() ->
-                new IllegalArgumentException("Guest not found or does not belong to the user"));
-
-        List<String> updatedTasks = new ArrayList<>(supplier.assignedTasks());
-        if (updatedTasks.contains(taskId)) {
-            updatedTasks.remove(taskId);
-            SuppliersModel updatedSupplier = supplier.withAssignedTasks(updatedTasks);
-            supplierRepo.save(updatedSupplier);
-        }
-
-        TasksModel task = tasksRepo.findById(taskId).orElseThrow();
-        List<String> updatedSuppliers = new ArrayList<>(task.assignedToSuppliers());
-        if (updatedSuppliers.contains(supplierId)) {
-            updatedSuppliers.remove(supplierId);
-            TasksModel updatedTask = task.withAssignedToSuppliers(updatedSuppliers);
-            tasksRepo.save(updatedTask);
-        }
-    }
-
-
-
-
 }
 

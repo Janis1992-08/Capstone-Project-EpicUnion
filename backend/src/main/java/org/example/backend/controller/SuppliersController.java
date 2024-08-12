@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.dto.SuppliersDto;
 import org.example.backend.model.SuppliersModel;
 import org.example.backend.service.SuppliersService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -30,17 +31,19 @@ public class SuppliersController {
 
 
     @PostMapping
-    public void addSupplier(@RequestBody SuppliersDto suppliersDto, Authentication authentication) {
-        String userId =  authentication.getName();
-        suppliersService.addSupplier(suppliersDto, userId);
+    public ResponseEntity<SuppliersModel> addSupplier(@RequestBody SuppliersDto suppliersDto, Authentication authentication) {
+        String userId = authentication.getName();
+        SuppliersModel newSupplier = suppliersService.addSupplier(suppliersDto, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newSupplier);
     }
 
 
 
     @PutMapping("/{id}")
-    public void updateSupplier(@PathVariable String id, @RequestBody SuppliersDto suppliersDto, Authentication authentication) {
+    public ResponseEntity<SuppliersModel> updateSupplier(@PathVariable String id, @RequestBody SuppliersDto suppliersDto, Authentication authentication) {
         String userId = authentication.getName();
-        suppliersService.updateSupplier(id, suppliersDto, userId);
+        SuppliersModel updatedSupplier = suppliersService.updateSupplier(id, suppliersDto, userId);
+        return ResponseEntity.ok(updatedSupplier);
     }
 
 
@@ -49,22 +52,5 @@ public class SuppliersController {
         String userId = authentication.getName();
         suppliersService.deleteSupplier(id, userId);
     }
-
-    @PutMapping("/{supplierId}/tasks/{taskId}")
-    public ResponseEntity<Void> assignTaskToSupplier(@PathVariable String supplierId, @PathVariable String taskId, Authentication authentication) {
-        String userId = authentication.getName();
-        suppliersService.assignTaskToSupplier(supplierId, taskId, userId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{supplierId}/tasks/remove/{taskId}")
-    public ResponseEntity<Void> removeTaskFromSupplier(@PathVariable String supplierId, @PathVariable String taskId, Authentication authentication) {
-        String userId = authentication.getName();
-        suppliersService.removeTaskFromSupplier(supplierId, taskId, userId);
-        return ResponseEntity.ok().build();
-    }
-
-
-
 }
 

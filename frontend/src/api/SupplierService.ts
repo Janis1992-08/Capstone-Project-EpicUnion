@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Supplier} from "../components/FrontendSchema.ts";
+import {Supplier} from "../components/FrontendSchema.ts";
 
 const API_URL = '/api/suppliers';
 

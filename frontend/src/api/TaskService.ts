@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {Task} from "../components/FrontendSchema.ts";
 
-
 const API_URL = '/api/tasks';
 
 export const getTasks = () => axios.get<Task[]>(API_URL);

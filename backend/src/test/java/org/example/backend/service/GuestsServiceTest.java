@@ -39,13 +39,12 @@ class GuestsServiceTest {
     private GuestsService guestsService;
 
     private GuestsModel guest;
-    private TasksModel task;
+
     private final String userId = "ownerId";
 
     @BeforeEach
     void setUp() {
-        guest = new GuestsModel("1", "John Doe", "john@example.com", RsvpStatusModel.CONFIRMED, "Notes here", new ArrayList<>(), userId);
-        task = new TasksModel("task1", "Task 1", "Description 1", TasksStatusModel.OPEN, "2024-12-31", new ArrayList<>(), userId);
+        guest = new GuestsModel("1", "John", "Doe", "john@example.com", "0123456789", RsvpStatusModel.CONFIRMED, "Notes here", new ArrayList<>(), userId);
     }
 
     @Test
@@ -82,7 +81,7 @@ class GuestsServiceTest {
 
     @Test
     void addGuest_ShouldSaveNewGuest() {
-        GuestDto newGuestDto = new GuestDto("Jane Doe", "jane@example.com", RsvpStatusModel.PENDING, "Some notes", List.of(), userId);
+        GuestDto newGuestDto = new GuestDto("Jane", "Doe", "jane@example.com", "0123456789", RsvpStatusModel.PENDING, "Some notes", List.of(), userId);
         when(idService.generateUUID()).thenReturn("2");
 
         guestsService.addGuest(newGuestDto, userId);
@@ -91,54 +90,63 @@ class GuestsServiceTest {
         verify(guestsRepo).save(captor.capture());
         GuestsModel savedGuest = captor.getValue();
 
-        assertEquals("Jane Doe", savedGuest.name());
+        assertEquals("Jane", savedGuest.firstName());
+        assertEquals("Doe", savedGuest.lastName());
         assertEquals("jane@example.com", savedGuest.email());
+        assertEquals("0123456789", savedGuest.phoneNumber());
         assertEquals(RsvpStatusModel.PENDING, savedGuest.rsvpStatus());
         assertEquals("Some notes", savedGuest.notes());
         assertEquals("2", savedGuest.id());
     }
 
+
     @Test
     void updateGuest_ShouldUpdateGuestDetails() {
-        GuestDto updateDto = new GuestDto("John Doe", "john.doe@example.com", RsvpStatusModel.PENDING, "Updated notes", List.of("task1"), userId);
+        List<String> initialTasks = List.of("task1");
+        guest = new GuestsModel("1", "John", "Doe", "john@example.com", "0123456789", RsvpStatusModel.CONFIRMED, "Notes here", initialTasks, userId);
+        GuestDto updateDto = new GuestDto("John", "Updated", "john.updated@example.com", "9876543210", RsvpStatusModel.PENDING, "Updated notes", List.of("task2"), userId);
+
+        TasksModel oldTask = new TasksModel("task1", "Old Task", "Old Description", TasksStatusModel.IN_PROGRESS, "2025-01-01", new ArrayList<>(), new ArrayList<>(), userId);
+        TasksModel newTask = new TasksModel("task2", "New Task", "New Description", TasksStatusModel.OPEN, "2025-02-01", new ArrayList<>(), new ArrayList<>(), userId);
+
         when(guestsRepo.findByIdAndOwnerId("1", userId)).thenReturn(Optional.of(guest));
+        when(tasksRepo.findById("task1")).thenReturn(Optional.of(oldTask));
+        when(tasksRepo.findById("task2")).thenReturn(Optional.of(newTask));
+        when(guestsRepo.save(any(GuestsModel.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(tasksRepo.save(any(TasksModel.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         guestsService.updateGuest("1", updateDto, userId);
 
-        verify(guestsRepo).save(any(GuestsModel.class));
+        ArgumentCaptor<TasksModel> taskCaptor = ArgumentCaptor.forClass(TasksModel.class);
+        verify(tasksRepo, times(2)).save(taskCaptor.capture());
+        List<TasksModel> savedTasks = taskCaptor.getAllValues();
+
+        assertTrue(savedTasks.stream().anyMatch(task -> task.id().equals("task1") && task.assignedToGuests().isEmpty()));
+        assertTrue(savedTasks.stream().anyMatch(task -> task.id().equals("task2") && task.assignedToGuests().contains("1")));
     }
+
+
+
 
     @Test
-    void deleteGuest_ShouldDeleteGuest() {
-        when(guestsRepo.findByIdAndOwnerId("1", userId)).thenReturn(Optional.of(guest));
+    void deleteGuest_ShouldDeleteGuestAndCleanupTasks() {
 
-        guestsService.deleteGuest("1", userId);
+        String guestId = "1";
+        GuestsModel guestToDelete = new GuestsModel(guestId, "John", "Doe", "john@example.com", "0123456789", RsvpStatusModel.CONFIRMED, "Notes here", List.of("task1"), userId);
+        TasksModel associatedTask = new TasksModel("task1", "Task 1", "Description 1", TasksStatusModel.OPEN, "2024-12-31", List.of(guestId), new ArrayList<>(), userId);
 
-        verify(guestsRepo).delete(guest);
+        when(guestsRepo.findByIdAndOwnerId(guestId, userId)).thenReturn(Optional.of(guestToDelete));
+        when(tasksRepo.findById("task1")).thenReturn(Optional.of(associatedTask));
+
+        guestsService.deleteGuest(guestId, userId);
+
+        verify(guestsRepo).deleteById(guestId);
+
+        ArgumentCaptor<TasksModel> taskCaptor = ArgumentCaptor.forClass(TasksModel.class);
+        verify(tasksRepo).save(taskCaptor.capture());
+        TasksModel updatedTask = taskCaptor.getValue();
+        assertFalse(updatedTask.assignedToGuests().contains(guestId), "Assigned guests list should be empty after deleting the guest.");
     }
 
-    @Test
-    void assignTaskToGuest_ShouldAddTaskToGuestAndGuestToTask() {
-        when(guestsRepo.findByIdAndOwnerId("1", userId)).thenReturn(Optional.of(guest));
-        when(tasksRepo.findById("task1")).thenReturn(Optional.of(task));
 
-        guestsService.assignTaskToGuest("1", "task1", userId);
-
-        verify(guestsRepo).save(any(GuestsModel.class));
-        verify(tasksRepo).save(any(TasksModel.class));
-    }
-
-    @Test
-    void removeTaskFromGuest_ShouldRemoveTaskFromGuestAndGuestFromTask() {
-        guest = new GuestsModel(guest.id(), guest.name(), guest.email(), guest.rsvpStatus(), guest.notes(), List.of("task1"), userId);
-        task = new TasksModel(task.id(), task.title(), task.description(), task.taskStatus(), task.dueDate(), List.of("1"), userId);
-
-        when(guestsRepo.findByIdAndOwnerId("1", userId)).thenReturn(Optional.of(guest));
-        when(tasksRepo.findById("task1")).thenReturn(Optional.of(task));
-
-        guestsService.removeTaskFromGuest("1", "task1", userId);
-
-        verify(guestsRepo).save(any(GuestsModel.class));
-        verify(tasksRepo).save(any(TasksModel.class));
-    }
 }

@@ -73,7 +73,7 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToGue
                                 checked={task.assignedToGuests.includes(guest.id)}
                                 onChange={handleAssignedToGuests}
                             />
-                            {guest.name}
+                            {guest.firstName}
                         </label>
                     </div>
                 ))}

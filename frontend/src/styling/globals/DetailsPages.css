@@ -1,4 +1,4 @@
-.task-detail {
+.details-pages {
     padding: 20px;
     max-width: 800px;
     margin: 0 auto;
@@ -7,46 +7,46 @@
     border-radius: 4px;
 }
 
-.task-detail__header {
+.details-pages__header {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.task-detail__title {
+.details-pages__title {
     font-size: 24px;
     text-align: center;
     color: #333;
 }
 
-.task-detail__list {
+.details-pages__list {
     list-style-type: none;
     padding: 0;
 }
 
-.task-detail__list-item {
+.details-pages__list-item {
     padding: 20px;
     margin-bottom: 10px;
 }
 
-.task-detail__task-title {
+.details-pages__list-title {
     font-size: 20px;
     color: #4CAF50;
 }
 
-.task-detail__task-description {
+.details-pages__list-description {
     font-size: 16px;
     color: #666;
     margin: 10px 0;
 }
 
-.task-detail__task-info {
+.details-pages__list-info {
     font-size: 14px;
     color: #999;
 }
 
-.task-detail__button {
+.details-pages__button {
     padding: 10px 20px;
     margin-right: 10px;
     background-color: #4CAF50;
@@ -57,15 +57,15 @@
     font-size: 14px;
 }
 
-.task-detail__button--delete {
+.details-pages__button--delete {
     background-color: #f44336;
 }
 
-.task-detail__button:hover {
+.details-pages__button:hover {
     opacity: 0.8;
 }
 
-.task-detail__back-link {
+.details-pages__back-link {
     display: block;
     margin-top: 20px;
     text-align: center;
@@ -74,6 +74,6 @@
     font-size: 16px;
 }
 
-.task-detail__back-link:hover {
+.details-pages__back-link:hover {
     text-decoration: underline;
 }

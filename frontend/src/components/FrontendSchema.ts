@@ -2,8 +2,10 @@
 
 export interface Guest {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
+    phoneNumber: string;
     rsvpStatus: string;
     notes: string;
     assignedTasks: string[];
@@ -15,15 +17,23 @@ export interface Task {
     description: string;
     taskStatus: string;
     dueDate: string;
-    assignedTo: string[];
+    assignedToGuests: string[];
+    assignedToSuppliers: string[];
 }
 
-export interface GuestForm {
+export interface Supplier {
+    id: string;
     name: string;
-    email: string;
-    rsvpStatus: string;
-    notes: string;
+    description: string;
+    websiteUrl: string;
+    costs: number;
+    deliveryDate: string;
+    assignedTasks: string[];
+    contactEmail: string;
+    contactPhone: string;
+    contactAddress: string;
 }
+
 
 export const rsvpStatuses = [
     { value: "PENDING", label: "Pending" },

@@ -5,8 +5,10 @@ import org.example.backend.model.RsvpStatusModel;
 import java.util.List;
 
 public record GuestDto(
-        String name,
+        String firstName,
+        String lastName,
         String email,
+        String phoneNumber,
         RsvpStatusModel rsvpStatus,
         String notes,
         List<String> assignedTasks,

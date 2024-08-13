@@ -1,6 +1,5 @@
 package org.example.backend.model;
 
-
 import lombok.With;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,18 +7,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 @With
-@Document(collection = "guests")
-public record GuestsModel(
+@Document(collection = "suppliers")
+public record SuppliersModel(
         @Id
         String id,
-        String firstName,
-        String lastName,
-        String email,
-        String phoneNumber,
-        RsvpStatusModel rsvpStatus,
-        String notes,
+        String name,
+        String description,
+        String websiteUrl,
+        Double costs,
+        String deliveryDate,
         List<String> assignedTasks,
+        String contactEmail,
+        String contactPhone,
+        String contactAddress,
         String ownerId
 ) {}
-
-

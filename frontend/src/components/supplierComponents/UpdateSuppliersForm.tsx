@@ -1,33 +1,31 @@
 import React, {useEffect, useState} from "react";
-import {Guest, Task} from "../FrontendSchema.ts";
-import {updateGuest} from "../../api/GuestService.ts";
-import {GuestFormFields} from "./GuestFormFields.tsx";
+import {Supplier, Task} from "../FrontendSchema.ts";
+import {updateSupplier} from "../../api/SupplierService.ts";
+import {SupplierFormFields} from "./SupplierFormFields.tsx";
 
-interface UpdateGuestFormProps {
-    guest: Guest;
+interface UpdateSupplierFormProps {
+    initialSupplier: Supplier;
     tasks: Task[];
     onSave: () => void;
 }
 
-export default function UpdateGuestForm({ guest, onSave, tasks }: UpdateGuestFormProps) {
-    const [formData, setFormData] = useState<Guest>(guest);
 
+export default function UpdateSuppliersForm({ initialSupplier, onSave, tasks }: UpdateSupplierFormProps) {
+    const [supplier, setSupplier] = useState<Supplier>(initialSupplier);
 
     useEffect(() => {
-        setFormData(guest);
-    }, [guest]);
+        setSupplier(initialSupplier);
+    }, [initialSupplier]);
 
-    function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    }
+        setSupplier({ ...supplier, [name]: value });
+    };
 
     const handleAssignedToTask = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
-        setFormData(prevTask => ({
+        setSupplier(prevTask => ({
             ...prevTask,
             assignedTasks: checked
                 ? [...prevTask.assignedTasks, value]
@@ -39,15 +37,14 @@ export default function UpdateGuestForm({ guest, onSave, tasks }: UpdateGuestFor
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        updateGuest(guest.id, formData).then(onSave);
+        updateSupplier(initialSupplier.id, supplier).then(onSave);
     };
-
 
     return (
         <form onSubmit={handleSubmit} className="update-guest-form">
             <h3>Update Guest</h3>
-            <GuestFormFields
-                formData={formData}
+            <SupplierFormFields
+                supplier={supplier}
                 handleChange={handleChange}
                 tasks={tasks}
                 handleAssignedToTask={handleAssignedToTask}

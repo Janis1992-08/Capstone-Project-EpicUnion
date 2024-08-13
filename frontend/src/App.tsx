@@ -10,6 +10,8 @@ import axios from "axios";
 import RegisterPage from "./RegisterPage.tsx";
 import LoginPage from "./LoginPage.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import SupplierList from "./SupplierList.tsx";
+import SupplierDetail from "./SupplierDetail.tsx";
 
 function App() {
     const [user, setUser] = useState<string>("anonymousUser");
@@ -40,6 +42,8 @@ function App() {
                         <Route path="/guests/:id" element={<GuestDetail />} />
                         <Route path="/tasks" element={<TaskList />} />
                         <Route path="/tasks/:id" element={<TaskDetail />} />
+                        <Route path="/suppliers" element={<SupplierList />} />
+                        <Route path="/suppliers/:id" element={<SupplierDetail />} />
                     </Route>
                 </Routes>
             </div>

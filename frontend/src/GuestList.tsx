@@ -1,7 +1,7 @@
 import {Guest, Task} from "./components/FrontendSchema.ts";
 import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import './styling/GuestList.css';
+import './styling/globals/ListPages.css';
 import AddGuestForm from "./components/guestComponents/AddGuestForm.tsx";
 import Modal from "./components/Modal.tsx";
 import {getGuests} from "./api/GuestService.ts";
@@ -36,6 +36,13 @@ export default function GuestList() {
         setFilter(event.target.value);
     };
 
+    const getTaskNames = (tasksIds: string[]) => {
+        return tasksIds.map(tasksId => {
+            const task = tasks.find(t => t.id === tasksId);
+            return task ? task.title : 'Unassigned';
+        }).join(', ');
+    };
+
     const filteredGuests = guests.filter(guest => {
         const assignedTaskTitles = guest.assignedTasks
             .map(taskId => tasks.find(task => task.id === taskId)?.title)
@@ -43,7 +50,8 @@ export default function GuestList() {
             .join(', ')
             .toLowerCase();
 
-        return guest.name.toLowerCase().includes(filter.toLowerCase()) ||
+        return guest.firstName.toLowerCase().includes(filter.toLowerCase()) ||
+            guest.lastName.toLowerCase().includes(filter.toLowerCase()) ||
             guest.email.toLowerCase().includes(filter.toLowerCase()) ||
             guest.rsvpStatus.toLowerCase().includes(filter.toLowerCase()) ||
             assignedTaskTitles.includes(filter.toLowerCase());
@@ -51,16 +59,14 @@ export default function GuestList() {
 
 
     return (
-        <div className="guest-list">
-            <div className="guest-list__header">
-                <h1 className="guest-list__title">Gästeliste</h1>
+        <div className="list-pages">
+            <div className="list-pages__header">
+                <h1 className="list-pages__title">Gästeliste</h1>
             </div>
-            <button className="guest-list__button" onClick={openModal}>ADD New Guest</button>
-            <div className="guest-list__modal">
+            <button className="list-pages__button" onClick={openModal}>ADD New Guest</button>
                 <Modal isVisible={isVisible} onClose={closeModal}>
-                    <AddGuestForm onGuestAdded={handleGuestAdded} />
+                    <AddGuestForm onSave={handleGuestAdded} tasks={tasks} />
                 </Modal>
-            </div>
             <div >
                 <input
                     type="text"
@@ -69,29 +75,20 @@ export default function GuestList() {
                     onChange={handleFilterChange}
                 />
             </div>
-            <ul className="guest-list__list">
+            <ul className="list-pages__list">
                 {filteredGuests.map(guest => (
-                    <li className="guest-list__item" key={guest.id}>
-                        <Link className="guest-list__item-link" to={`/guests/${guest.id}`}>
-                            <div className="guest-list__guest-info">
-                                <div className="guest-list__guest-name">Name: {guest.name}</div>
-                                <div className="guest-list__guest-contact">Contact: {guest.email}</div>
-                                <div className="guest-list__guest-status">Status: {guest.rsvpStatus}</div>
-                                <p className="guest-list__guest-notes">{guest.notes}</p>
-                            </div>
-                            <ul className="guest-list__tasks">
-                                {(guest.assignedTasks || []).map(assignedTaskId => {
-                                    const task = tasks.find(t => t.id === assignedTaskId);
-                                    return task ? (
-                                        <li className="guest-list__task-item" key={task.id}>{task.title}</li>
-                                    ) : null;
-                                })}
-                            </ul>
+                    <li className="list-pages__list-item" key={guest.id}>
+                        <Link to={`/guests/${guest.id}`}>
+                            <h2 className="list-pages__list-title"> {guest.firstName}  {guest.lastName}</h2>
+                            <p className="list-pages__list-info">Contact: {guest.email}</p>
+                            <p className="list-pages__list-info">Status: {guest.rsvpStatus}</p>
+                            <p className="list-pages__list-info">{guest.notes}</p>
+                            <p className="list-pages__list-info">Tasks: {getTaskNames(guest.assignedTasks)}</p>
                         </Link>
                     </li>
                 ))}
             </ul>
-            <Link className="guest-list__back-link" to="/homepage">Back to Home Page</Link>
+            <Link className="list-pages__back-link" to="/homepage">Back to Home Page</Link>
         </div>
     );
 }

@@ -1,19 +1,24 @@
 import React, {useState} from 'react';
-import {Guest, rsvpStatuses} from "../FrontendSchema.ts";
+import {Guest, rsvpStatuses, Task} from "../FrontendSchema.ts";
 import {createGuest} from "../../api/GuestService.ts";
 import {GuestFormFields} from "./GuestFormFields.tsx";
 
 
 interface AddGuestFormProps {
-    onGuestAdded: (newGuest: Guest) => void;
+    onSave: () => void;
+    tasks: Task[];
 }
 
-export default function AddGuestForm({ onGuestAdded }: Readonly<AddGuestFormProps>) {
-    const [formData, setFormData] = useState({
-        name: "",
+export default function AddGuestForm({ onSave, tasks }: Readonly<AddGuestFormProps>) {
+    const [formData, setFormData] = useState<Guest>({
+        id: '',
+        firstName: "",
+        lastName: "",
         email: "",
+        phoneNumber: "",
         rsvpStatus: rsvpStatuses[0].value,
-        notes: ""
+        notes: "",
+        assignedTasks: []
     });
 
 
@@ -25,26 +30,26 @@ export default function AddGuestForm({ onGuestAdded }: Readonly<AddGuestFormProp
         }));
     }
 
+    const handleAssignedToTask = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event.target;
+        setFormData(prevTask => ({
+            ...prevTask,
+            assignedTasks: checked
+                ? [...prevTask.assignedTasks, value]
+                : prevTask.assignedTasks.filter(id => id !== value)
+        }));
+    };
+
+
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        createGuest(formData)
-            .then(response => {
-                console.log('Guest added:', response.data);
-                onGuestAdded(response.data);
-                setFormData({
-                    name: '',
-                    email: '',
-                    rsvpStatus: rsvpStatuses[0].value,
-                    notes: ''
-                });
-            })
-            .catch(error => console.error('Error adding guest:', error));
+        createGuest(formData).then(onSave);
     };
 
     return (
         <form onSubmit={handleSubmit} className="add-guest-form">
             <h3>Neuen Gast hinzufügen</h3>
-            <GuestFormFields formData={formData} handleChange={handleChange}/>
+            <GuestFormFields formData={formData} handleChange={handleChange} tasks={tasks} handleAssignedToTask={handleAssignedToTask}/>
             <button type="submit">Hinzufügen</button>
         </form>
     );

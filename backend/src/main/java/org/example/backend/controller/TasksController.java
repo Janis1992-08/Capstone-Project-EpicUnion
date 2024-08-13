@@ -60,4 +60,11 @@ public class TasksController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{taskId}/suppliers/{supplierId}")
+    public ResponseEntity<Void> addSupplierToTask(@PathVariable String taskId, @PathVariable String supplierId, Authentication authentication) {
+        String userId = authentication.getName();
+        tasksService.addSupplierToTask(taskId, supplierId, userId);
+        return ResponseEntity.ok().build();
+    }
+
 }

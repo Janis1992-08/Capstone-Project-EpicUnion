@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Guest, Task} from "../FrontendSchema.ts";
+import {Guest, Supplier, Task} from "../FrontendSchema.ts";
 import {updateTask} from "../../api/TaskService.ts";
 import {TaskFormFields} from "./TaskFormFields.tsx";
 
@@ -7,9 +7,10 @@ interface UpdateTaskFormProps {
     initialTask: Task;
     onSave: () => void;
     guests: Guest[];
+    suppliers: Supplier[];
 }
 
-export default function UpdateTaskForm({ initialTask, onSave, guests }: UpdateTaskFormProps) {
+export default function UpdateTaskForm({ initialTask, onSave, guests, suppliers }: UpdateTaskFormProps) {
     const [task, setTask] = useState<Task>(initialTask);
 
     useEffect(() => {
@@ -21,13 +22,23 @@ export default function UpdateTaskForm({ initialTask, onSave, guests }: UpdateTa
         setTask({ ...task, [name]: value });
     };
 
-    const handleAssignedToChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAssignedToGuests = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
         setTask(prevTask => ({
             ...prevTask,
-            assignedTo: checked
-                ? [...prevTask.assignedTo, value]
-                : prevTask.assignedTo.filter(id => id !== value)
+            assignedToGuests: checked
+                ? [...prevTask.assignedToGuests, value]
+                : prevTask.assignedToGuests.filter(id => id !== value)
+        }));
+    };
+
+    const handleAssignedToSuppliers = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event.target;
+        setTask(prevTask => ({
+            ...prevTask,
+            assignedToSuppliers: checked
+                ? [...prevTask.assignedToSuppliers, value]
+                : prevTask.assignedToSuppliers.filter(id => id !== value)
         }));
     };
 
@@ -41,8 +52,10 @@ export default function UpdateTaskForm({ initialTask, onSave, guests }: UpdateTa
             <TaskFormFields
                 task={task}
                 guests={guests}
+                suppliers={suppliers}
                 handleChange={handleChange}
-                handleAssignedToChange={handleAssignedToChange}
+                handleAssignedToGuests={handleAssignedToGuests}
+                handleAssignedToSuppliers={handleAssignedToSuppliers}
             />
             <button type="submit">Save</button>
         </form>

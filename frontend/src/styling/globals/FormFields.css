@@ -67,6 +67,14 @@
     background-color: #45a049;
 }
 
+.toggle-button {
+    padding: 10px 15px;
+    background-color: white;
+    border-bottom:  solid 1px #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 
 @media (max-width: 600px) {
     .form-fields {

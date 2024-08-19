@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Supplier, Task} from "../FrontendSchema.ts";
 
 
@@ -10,6 +10,10 @@ interface SupplierFormFieldsProps {
 }
 
 export function SupplierFormFields({ supplier, handleChange, tasks, handleAssignedToTask }: SupplierFormFieldsProps) {
+    const [showTasks, setShowTasks] = useState(false);
+
+    const toggleTasks = () => setShowTasks(!showTasks);
+
     return (
         <div className="form-fields">
             <div>
@@ -96,6 +100,11 @@ export function SupplierFormFields({ supplier, handleChange, tasks, handleAssign
                     onChange={handleChange}
                 />
             </div>
+            <div>
+                <button type="button" onClick={toggleTasks} className="toggle-button">
+                    {showTasks? 'Hide Assigned Tasks' : 'Show Assigned Tasks'}
+                </button>
+                {showTasks && (
             <div className="checkbox-group">
                 <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
                 {tasks.map(task => (
@@ -112,6 +121,8 @@ export function SupplierFormFields({ supplier, handleChange, tasks, handleAssign
                         </label>
                     </div>
                 ))}
+            </div>
+                )}
             </div>
         </div>
     );

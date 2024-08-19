@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Guest, rsvpStatuses, Task} from "../FrontendSchema.ts";
 import "../../styling/globals/FormFields.css";
 
@@ -10,6 +10,10 @@ interface GuestFormFieldsProps {
 }
 
 export function GuestFormFields({ formData, handleChange , tasks, handleAssignedToTask}: GuestFormFieldsProps) {
+    const [showTasks, setShowTasks] = useState(false);
+
+    const toggleTasks = () => setShowTasks(!showTasks);
+
     return (
         <div className="form-fields">
             <div>
@@ -79,6 +83,11 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
                     onChange={handleChange}
                 />
             </div>
+            <div>
+                <button type="button" onClick={toggleTasks} className="toggle-button">
+                    {showTasks? 'Hide Assigned Tasks' : 'Show Assigned Tasks'}
+                </button>
+                {showTasks && (
             <div className="checkbox-group">
                 <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
                 {tasks.map(task => (
@@ -95,6 +104,8 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
                         </label>
                     </div>
                 ))}
+            </div>
+                )}
             </div>
         </div>
     );

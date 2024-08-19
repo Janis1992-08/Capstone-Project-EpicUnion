@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import "../styling/Modal.css";
 
-interface Modal {
+interface ModalProps {
     isVisible: boolean;
     onClose: () => void;
     children: ReactNode;
@@ -9,17 +9,19 @@ interface Modal {
 
 
 
-export default function Modal({isVisible, onClose, children}: Readonly<Modal>) {
+export default function Modal({ isVisible, onClose, children }: ModalProps) {
     return (
         <>
-            {isVisible &&
+            {isVisible && (
                 <div className="modal">
                     <div className="modal-dialog">
                         {children}
-                        <button onClick={() => onClose()}>Close</button>
+                        <button className="modal-close-btn" onClick={onClose}>
+                            Close
+                        </button>
                     </div>
                 </div>
-            }
+            )}
         </>
-    )
+    );
 }

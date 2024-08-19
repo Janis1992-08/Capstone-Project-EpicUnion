@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Guest, rsvpStatuses, Task} from "../FrontendSchema.ts";
+import "../../styling/globals/FormFields.css";
 
 interface GuestFormFieldsProps {
     formData: Guest;
@@ -9,8 +10,12 @@ interface GuestFormFieldsProps {
 }
 
 export function GuestFormFields({ formData, handleChange , tasks, handleAssignedToTask}: GuestFormFieldsProps) {
+    const [showTasks, setShowTasks] = useState(false);
+
+    const toggleTasks = () => setShowTasks(!showTasks);
+
     return (
-        <>
+        <div className="form-fields">
             <div>
                 <label htmlFor="firstName">First Name:</label>
                 <input
@@ -45,11 +50,11 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
                 />
             </div>
             <div>
-                <label htmlFor={"phone"}>Phone:</label>
+                <label htmlFor={"phoneNumber"}>Phone:</label>
                 <input
                     type="tel"
-                    id="phone"
-                    name="phone"
+                    id="phoneNumber"
+                    name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
 
@@ -79,7 +84,12 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
                 />
             </div>
             <div>
-                <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
+                <button type="button" onClick={toggleTasks} className="toggle-button">
+                    {showTasks? 'Hide Tasks' : 'Show Tasks'}
+                </button>
+                {showTasks && (
+            <div className="checkbox-group">
+                <label htmlFor="handleAssignedToTask">Select Tasks:</label>
                 {tasks.map(task => (
                     <div key={task.id}>
                         <label>
@@ -95,6 +105,8 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
                     </div>
                 ))}
             </div>
-        </>
+                )}
+            </div>
+        </div>
     );
 }

@@ -41,8 +41,32 @@ export const rsvpStatuses = [
     { value: "DECLINED", label: "Declined" },
 ];
 
+export const getRsvpStatusLabel = (statusCode: string) => {
+    return rsvpStatuses.find(status => status.value === statusCode)?.label;
+}
+
 export const taskStatuses = [
     { value: "OPEN", label: "To Do" },
     { value: "IN_PROGRESS", label: "In Progress" },
     { value: "DONE", label: "Done" }
 ];
+
+export const getTaskStatusLabel = (statusCode: string) => {
+    return taskStatuses.find(status => status.value === statusCode)?.label;
+}
+
+export const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+};
+
+export const formatCurrency = (amount: number): string => {
+    return amount.toLocaleString('de-DE', {
+        style: 'currency',
+        currency: 'EUR'
+    });
+};

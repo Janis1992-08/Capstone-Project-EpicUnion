@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Guest, Supplier, Task, taskStatuses} from "../FrontendSchema.ts";
 import {createTask} from "../../api/TaskService.ts";
 import {TaskFormFields} from "./TaskFormFields.tsx";
+import "../../styling/globals/FormFields.css"
 
 
 interface AddTaskFormProps {
@@ -52,10 +53,12 @@ export default function AddTaskForm({ onSave, guests, suppliers }: AddTaskFormPr
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         createTask(task).then(onSave);
+        alert(`Task '${task.title}' has been added!`);
     };
 
     return (
         <form onSubmit={handleSubmit}>
+            <h3>Create new Task</h3>
             <TaskFormFields
                 task={task}
                 guests={guests}
@@ -64,7 +67,7 @@ export default function AddTaskForm({ onSave, guests, suppliers }: AddTaskFormPr
                 handleAssignedToGuests={handleAssignedToGuests}
                 handleAssignedToSuppliers={handleAssignedToSuppliers}
             />
-            <button type="submit">Save</button>
+            <button className="form-submit-button" type="submit">Add Task</button>
         </form>
 
     );

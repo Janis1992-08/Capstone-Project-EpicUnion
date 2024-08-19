@@ -1,0 +1,109 @@
+.form-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.form-fields div {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-fields label {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-fields input[type="text"],
+.form-fields input[type="date"],
+.form-fields textarea,
+.form-fields select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-fields textarea {
+    height: 100px;
+    resize: none;
+}
+
+.form-fields input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.form-fields div label {
+    display: flex;
+    align-items: center;
+}
+
+.form-fields .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.form-fields .checkbox-group label {
+    align-items: center;
+}
+
+.form-fields select {
+    cursor: pointer;
+}
+
+.form-submit-button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    transition: background-color 0.3s ease-in-out;
+}
+
+.form-submit-button:hover {
+    background-color: #45a049;
+}
+
+.toggle-button {
+    padding: 10px 15px;
+    background-color: white;
+    border-bottom:  solid 1px #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+@media (max-width: 600px) {
+    .form-fields {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .form-fields label,
+    .form-fields input,
+    .form-fields textarea,
+    .form-fields select {
+        font-size: 0.9em;
+    }
+
+    .form-fields .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+
+    .form-fields input[type="text"],
+    .form-fields input[type="date"],
+    .form-fields textarea,
+    .form-fields select {
+        padding: 8px;
+    }
+
+    .form-fields textarea {
+        height: 80px;
+    }
+}
+
+

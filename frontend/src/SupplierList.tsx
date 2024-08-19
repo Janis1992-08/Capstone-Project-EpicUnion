@@ -1,11 +1,17 @@
 import React, { useEffect, useState} from 'react';
-import {Supplier, Task} from "./components/FrontendSchema.ts";
+import {formatDate, formatCurrency, Supplier, Task} from "./components/FrontendSchema.ts";
 import { Link } from 'react-router-dom';
 import Modal from "./components/Modal.tsx";
 import {getSuppliers} from "./api/SupplierService.ts";
 import AddSupplierForm from "./components/supplierComponents/AddSupplierForm.tsx";
 import './styling/globals/ListPages.css';
 import {getTasks} from "./api/TaskService.ts";
+
+const calculateTotalCosts = (suppliers: Supplier[]): string => {
+    const total = suppliers.reduce((acc, supplier) => acc + supplier.costs, 0);
+    return formatCurrency(total);
+};
+
 
 export default function SupplierList() {
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -64,28 +70,29 @@ export default function SupplierList() {
     return (
         <div className="list-pages">
             <div className="list-pages__header">
-            <h1 className="list-pages__title">Suppliers</h1>
+                <h1 className="list-pages__title">Suppliers</h1>
             </div>
-            <button className="list-pages__button" onClick={openModal}>Add New Supplier</button>
+            <button className="list-pages__button" onClick={openModal}>Add Supplier</button>
             <Modal isVisible={isVisible} onClose={closeModal}>
-                <AddSupplierForm onSave={handleSupplierAdded} tasks={tasks} />
+                <AddSupplierForm onSave={handleSupplierAdded} tasks={tasks}/>
             </Modal>
-            <div >
-            <input
-                type="text"
-                placeholder="Filter suppliers..."
-                value={filter}
-                onChange={handleFilterChange}
-            />
+            <div>
+                <input
+                    type="text"
+                    placeholder="Filter suppliers..."
+                    value={filter}
+                    onChange={handleFilterChange}
+                />
             </div>
+            <p>Total Costs: {calculateTotalCosts(suppliers)}</p>
             <ul className="list-pages__list">
                 {filteredSuppliers.map(supplier => (
                     <li key={supplier.id} className="list-pages__list-item">
                         <Link to={`/suppliers/${supplier.id}`}>
                             <h2 className="list-pages__list-title">{supplier.name} </h2>
                             <p className="list-pages__list-description">{supplier.description}</p>
-                            <p className="list-pages__list-info">Costs: {supplier.costs}</p>
-                            <p className="list-pages__list-info">Delivery Date: {supplier.deliveryDate}</p>
+                            <p className="list-pages__list-info">Costs: {formatCurrency(supplier.costs)}</p>
+                            <p className="list-pages__list-info">Delivery Date: {formatDate(supplier.deliveryDate)}</p>
                             <p className="list-pages__list-info">Email: {supplier.contactEmail}</p>
                             <p className="list-pages__list-info">Tasks: {getTaskNames(supplier.assignedTasks)}</p>
                         </Link>

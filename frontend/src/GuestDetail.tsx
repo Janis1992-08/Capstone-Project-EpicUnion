@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Guest, Task } from "./components/FrontendSchema.ts";
+import { Guest, Task, getRsvpStatusLabel } from "./components/FrontendSchema.ts";
 import React, {useCallback, useEffect, useState} from "react";
 import './styling/globals/DetailsPages.css';
 import UpdateGuestForm from "./components/guestComponents/UpdateGuestForm.tsx";
@@ -85,27 +85,28 @@ export default function GuestDetail() {
 
     return (
         <>
+            <div className="details-pages__header">
+                <h1 className="details-pages__title">Guest Details</h1>
+            </div>
             <div className="details-pages">
-                <div className="details-pages__header">
-                    <h1 className="details-pages__title">Guest Details</h1>
-                </div>
                 <ul className="details-pages__list">
                     <li className="details-pages__list-item" key={guest.id}>
-                        <h2 className="details-pages__list-title"><strong>Name:</strong> {guest.firstName} {guest.lastName}</h2>
+                        <h2 className="details-pages__list-title">
+                             {guest.firstName} {guest.lastName}</h2>
                         <p className="details-pages__list-info"><strong>Email:</strong> {guest.email}</p>
                         <p className="details-pages__list-info"><strong>Phone:</strong> {guest.phoneNumber}</p>
-                        <p className="details-pages__list-info"><strong>RSVP Status:</strong> {guest.rsvpStatus}</p>
+                        <p className="details-pages__list-info"><strong>RSVP Status:</strong> {getRsvpStatusLabel(guest.rsvpStatus)}</p>
                         <p className="details-pages__list-info"><strong>Notes:</strong> {guest.notes}</p>
-                        <p className="details-pages__list-info">Tasks: {getTaskNames(guest.assignedTasks)}</p>
-                        <button className="details-pages__button" onClick={openModal}>Update Guest</button>
-                        <Modal isVisible={isVisible} onClose={closeModal}>
-                            <UpdateGuestForm guest={guest} onSave={handleGuestUpdate} tasks={tasks}/>
-                        </Modal>
-                        <button className="details-pages__button details-pages__button--delete"
-                                onClick={handleDelete}>Delete Guest
-                        </button>
+                        <p className="details-pages__list-info"><strong>Tasks:</strong> {getTaskNames(guest.assignedTasks)}</p>
                     </li>
                 </ul>
+                <button className="details-pages__button" onClick={openModal}>Update Guest</button>
+                <Modal isVisible={isVisible} onClose={closeModal}>
+                    <UpdateGuestForm guest={guest} onSave={handleGuestUpdate} tasks={tasks}/>
+                </Modal>
+                <button className="details-pages__button details-pages__button--delete"
+                        onClick={handleDelete}>Delete Guest
+                </button>
             </div>
             <Link className="details-pages__back-link" to={"/guests"}>Back to Guest List</Link>
             <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)}

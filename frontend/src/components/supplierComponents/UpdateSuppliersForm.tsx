@@ -39,6 +39,7 @@ export default function UpdateSuppliersForm({ initialSupplier, onSave, tasks }: 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         updateSupplier(initialSupplier.id, supplier).then(onSave);
+        alert(`Supplier '${supplier.name}' has been updated!`);
     };
 
     return (

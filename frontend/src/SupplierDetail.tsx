@@ -1,12 +1,13 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import {Supplier, Task} from "./components/FrontendSchema.ts";
+import {Supplier, Task, formatDate, formatCurrency} from "./components/FrontendSchema.ts";
 import Modal from "./components/Modal.tsx";
 import ConfirmModal from "./components/ConfirmModal.tsx";
 import {deleteSupplier, getSupplierById} from "./api/SupplierService.ts";
 import UpdateSuppliersForm from "./components/supplierComponents/UpdateSuppliersForm.tsx";
 import './styling/globals/DetailsPages.css';
 import {getTasks} from "./api/TaskService.ts";
+
 
 
 export default function SupplierDetail() {
@@ -96,8 +97,10 @@ export default function SupplierDetail() {
                         <h2 className="details-pages__list-title">{supplier.name}</h2>
                         <p className="details-pages__list-description">{supplier.description}</p>
                         <p className="details-pages__list-info"><strong>Website:</strong> {supplier.websiteUrl}</p>
-                        <p className="details-pages__list-info"><strong>Costs:</strong> {supplier.costs} €</p>
-                        <p className="details-pages__list-info"><strong>Delivery Date:</strong> {supplier.deliveryDate}</p>
+                        <p className="details-pages__list-info"><strong>Costs:</strong> {formatCurrency(supplier.costs)}</p>
+                        <p className="details-pages__list-info"><strong>Delivery
+                            Date:</strong> {formatDate(supplier.deliveryDate)}</p>
+
                         <p className="details-pages__list-info"><strong>Phone:</strong> {supplier.contactPhone}</p>
                         <p className="details-pages__list-info"><strong>Email:</strong> {supplier.contactEmail}</p>
                         <p className="details-pages__list-info"><strong>Address:</strong> {supplier.contactAddress}</p>

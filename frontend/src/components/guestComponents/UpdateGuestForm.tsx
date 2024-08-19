@@ -41,6 +41,7 @@ export default function UpdateGuestForm({ guest, onSave, tasks }: UpdateGuestFor
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         updateGuest(guest.id, formData).then(onSave);
+        alert(`Guest '${formData.firstName} ${formData.lastName}' has been updated!`);
     };
 
 

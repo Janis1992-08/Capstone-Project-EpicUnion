@@ -45,6 +45,7 @@ export default function AddGuestForm({ onSave, tasks }: Readonly<AddGuestFormPro
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         createGuest(formData).then(onSave);
+        alert(`Guest '${formData.firstName} ${formData.lastName}' has been added!`);
     };
 
     return (

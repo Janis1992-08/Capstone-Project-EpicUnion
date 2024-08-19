@@ -85,11 +85,11 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
             </div>
             <div>
                 <button type="button" onClick={toggleTasks} className="toggle-button">
-                    {showTasks? 'Hide Assigned Tasks' : 'Show Assigned Tasks'}
+                    {showTasks? 'Hide Tasks' : 'Show Tasks'}
                 </button>
                 {showTasks && (
             <div className="checkbox-group">
-                <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
+                <label htmlFor="handleAssignedToTask">Select Tasks:</label>
                 {tasks.map(task => (
                     <div key={task.id}>
                         <label>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getTasks} from "./api/TaskService.ts";
-import {Guest, Supplier, Task} from "./components/FrontendSchema.ts";
+import {Guest, Supplier, Task, getTaskStatusLabel, formatDate} from "./components/FrontendSchema.ts";
 import Modal from "./components/Modal.tsx";
 import AddTaskForm from "./components/taskComponents/AddTaskForm.tsx";
 import {Link} from "react-router-dom";
@@ -63,14 +63,12 @@ export default function TaskList() {
         setFilter(event.target.value);
     }
 
-    const filteredTasks = tasks.filter(task =>
-        task.title.toLowerCase().includes(filter.toLowerCase()) ||
-        task.description.toLowerCase().includes(filter.toLowerCase()) ||
-        task.dueDate.toLowerCase().includes(filter.toLowerCase()) ||
-        task.taskStatus.toLowerCase().includes(filter.toLowerCase()) ||
-        getGuestNames(task.assignedToGuests).toLowerCase().includes(filter.toLowerCase()) ||
-        getSupplierNames(task.assignedToSuppliers).toLowerCase().includes(filter.toLowerCase())
-    );
+    const filteredTasks = tasks.filter(task => {
+        const statusLabel = getTaskStatusLabel(task.taskStatus) || '';
+        return task.title.toLowerCase().includes(filter.toLowerCase()) ||
+            task.description.toLowerCase().includes(filter.toLowerCase()) ||
+            statusLabel.toLowerCase().includes(filter.toLowerCase());
+    });
 
 
     return (
@@ -83,12 +81,12 @@ export default function TaskList() {
                 <AddTaskForm onSave={handleTaskAdded} guests={guests} suppliers={suppliers}/>
             </Modal>
             <div >
-            <input
-            type={"text"}
-            placeholder={"Filter tasks..."}
-            value={filter}
-            onChange={handleFilterChange}
-            />
+                <input
+                    type={"text"}
+                    placeholder={"Filter tasks..."}
+                    value={filter}
+                    onChange={handleFilterChange}
+                />
             </div>
             <ul className="list-pages__list">
                 {filteredTasks.map(task => (
@@ -96,8 +94,8 @@ export default function TaskList() {
                         <Link to={`/tasks/${task.id}`}>
                             <h2 className="list-pages__list-title">{task.title}</h2>
                             <p className="list-pages__list-description">{task.description}</p>
-                            <p className="list-pages__list-info">Due Date: {task.dueDate}</p>
-                            <p className="list-pages__list-info">Status: {task.taskStatus}</p>
+                            <p className="list-pages__list-info">Due Date: {formatDate(task.dueDate)}</p>
+                            <p className="list-pages__list-info">Status: {getTaskStatusLabel(task.taskStatus)}</p>
                             <p className="list-pages__list-info">Assigned To: {getGuestNames(task.assignedToGuests)}</p>
                             <p className="list-pages__list-info">Suppliers: {getSupplierNames(task.assignedToSuppliers)}</p>
                         </Link>
@@ -108,5 +106,4 @@ export default function TaskList() {
         </div>
     );
 }
-
 

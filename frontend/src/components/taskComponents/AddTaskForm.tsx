@@ -53,6 +53,7 @@ export default function AddTaskForm({ onSave, guests, suppliers }: AddTaskFormPr
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         createTask(task).then(onSave);
+        alert(`Task '${task.title}' has been added!`);
     };
 
     return (

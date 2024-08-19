@@ -69,10 +69,11 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToGue
             </div>
             <div>
                 <button type="button" onClick={toggleGuests} className="toggle-button">
-                    {showGuests ? 'Hide Assigned Guests' : 'Show Assigned Guests'}
+                    {showGuests ? 'Hide Guests' : 'Show Guests'}
                 </button>
                 {showGuests && (
                     <div className="checkbox-group">
+                        <label htmlFor="assignedToGuests">Select Guests:</label>
                         {guests.map(guest => (
                             <div key={guest.id}>
                                 <label>
@@ -91,11 +92,12 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToGue
                 )}
             </div>
             <div>
-                <button type="button" onClick={toggleSuppliers} className="toggle-button">
-                    {showSuppliers ? 'Hide Assigned Suppliers' : 'Show Assigned Suppliers'}
+            <button type="button" onClick={toggleSuppliers} className="toggle-button">
+                    {showSuppliers ? 'Hide Suppliers' : 'Show Suppliers'}
                 </button>
                 {showSuppliers && (
                     <div className="checkbox-group">
+                        <label htmlFor="assignedToSuppliers">Select Suppliers:</label>
                         {suppliers.map(supplier => (
                             <div key={supplier.id}>
                                 <label>

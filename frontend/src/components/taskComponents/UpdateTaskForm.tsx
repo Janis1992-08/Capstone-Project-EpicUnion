@@ -46,6 +46,7 @@ export default function UpdateTaskForm({ initialTask, onSave, guests, suppliers 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         updateTask(task.id, task).then(onSave);
+        alert(`Task '${task.title}' has been updated!`);
     };
 
     return (

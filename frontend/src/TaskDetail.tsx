@@ -1,6 +1,6 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
 import React, {useCallback, useEffect, useState} from "react";
-import {Guest, Supplier, Task} from "./components/FrontendSchema.ts";
+import {Guest, Supplier, Task, getTaskStatusLabel, formatDate} from "./components/FrontendSchema.ts";
 import {deleteTask, getTaskById} from "./api/TaskService.ts";
 import Modal from "./components/Modal.tsx";
 import UpdateTaskForm from "./components/taskComponents/UpdateTaskForm.tsx";
@@ -8,6 +8,7 @@ import {getGuests} from "./api/GuestService.ts";
 import './styling/globals/DetailsPages.css';
 import ConfirmModal from "./components/ConfirmModal.tsx";
 import {getSuppliers} from "./api/SupplierService.ts";
+
 
 export default function TaskDetail() {
     const { id } = useParams<{ id: string }>();
@@ -126,8 +127,8 @@ export default function TaskDetail() {
                     <li className="details-pages__list-item" key={task.id}>
                         <h2 className="details-pages__list-title">{task.title}</h2>
                         <p className="details-pages__list-description">{task.description}</p>
-                        <p className="details-pages__list-info "><strong>Due Date:</strong> {task.dueDate}</p>
-                        <p className="details-pages__list-info"><strong>Status:</strong> {task.taskStatus}</p>
+                        <p className="details-pages__list-info "><strong>Due Date:</strong> {formatDate(task.dueDate)}</p>
+                        <p className="details-pages__list-info"><strong>Status:</strong> {getTaskStatusLabel(task.taskStatus)}</p>
                         <p className="details-pages__list-info"><strong>Assigned To:</strong> {getGuestNames(task.assignedToGuests)}</p>
                         <p className="details-pages__list-info"><strong>Suppliers:</strong> {getSupplierNames(task.assignedToSuppliers)}</p>
                     </li>

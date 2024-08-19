@@ -47,6 +47,7 @@ export default function AddSupplierForm({ onSave, tasks }: Readonly<AddSupplierF
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         createSupplier(supplier).then(onSave);
+        alert(`Supplier '${supplier.name}' has been added!`);
     };
 
     return (

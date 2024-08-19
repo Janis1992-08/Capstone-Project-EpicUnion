@@ -9,10 +9,13 @@ interface SupplierFormFieldsProps {
     handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 }
 
+
 export function SupplierFormFields({ supplier, handleChange, tasks, handleAssignedToTask }: SupplierFormFieldsProps) {
     const [showTasks, setShowTasks] = useState(false);
 
     const toggleTasks = () => setShowTasks(!showTasks);
+
+
 
     return (
         <div className="form-fields">
@@ -102,11 +105,11 @@ export function SupplierFormFields({ supplier, handleChange, tasks, handleAssign
             </div>
             <div>
                 <button type="button" onClick={toggleTasks} className="toggle-button">
-                    {showTasks? 'Hide Assigned Tasks' : 'Show Assigned Tasks'}
+                    {showTasks? 'Hide Tasks' : 'Show Tasks'}
                 </button>
                 {showTasks && (
             <div className="checkbox-group">
-                <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
+                <label htmlFor="handleAssignedToTask">Select Tasks:</label>
                 {tasks.map(task => (
                     <div key={task.id}>
                         <label>

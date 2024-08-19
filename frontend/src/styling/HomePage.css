@@ -28,7 +28,7 @@
 
 .homepage__nav li {
     display: inline;
-    margin: 0 15px;
+    margin: 0 10px;
 }
 
 .homepage__nav a {
@@ -45,4 +45,45 @@
 .homepage__nav a:hover {
     background-color: #fff;
     color: #4CAF50;
+}
+
+@media (max-width: 768px) {
+    .homepage__title {
+        font-size: 2em;
+    }
+    .homepage__nav a {
+        padding: 8px 10px;
+        font-size: 1.2em;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .homepage {
+        min-height: 75vh;
+    }
+
+    .homepage__title {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .homepage__nav li {
+        display: block;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 0.8em;
+        width: 100%;
+    }
+
+    .homepage__nav a {
+        display: inline-block;
+       width: 60%;
+        margin: 0 auto;
+    }
+
+    .homepage__nav {
+        width: 100%;
+    }
+
 }

@@ -11,7 +11,7 @@ interface SupplierFormFieldsProps {
 
 export function SupplierFormFields({ supplier, handleChange, tasks, handleAssignedToTask }: SupplierFormFieldsProps) {
     return (
-        <>
+        <div className="form-fields">
             <div>
                 <label htmlFor="name">Name:</label>
                 <input
@@ -96,7 +96,7 @@ export function SupplierFormFields({ supplier, handleChange, tasks, handleAssign
                     onChange={handleChange}
                 />
             </div>
-            <div>
+            <div className="checkbox-group">
                 <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
                 {tasks.map(task => (
                     <div key={task.id}>
@@ -113,6 +113,6 @@ export function SupplierFormFields({ supplier, handleChange, tasks, handleAssign
                     </div>
                 ))}
             </div>
-        </>
+        </div>
     );
 }

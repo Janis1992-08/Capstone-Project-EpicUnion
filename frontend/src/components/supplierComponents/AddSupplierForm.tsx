@@ -2,6 +2,7 @@ import {Supplier, Task} from "../FrontendSchema.ts";
 import React, {useState} from "react";
 import {createSupplier} from "../../api/SupplierService.ts";
 import {SupplierFormFields} from "./SupplierFormFields.tsx";
+import "../../styling/globals/FormFields.css"
 
 interface AddSupplierFormProps {
     onSave: () => void;
@@ -50,9 +51,9 @@ export default function AddSupplierForm({ onSave, tasks }: Readonly<AddSupplierF
 
     return (
         <form onSubmit={handleSubmit} className="add-supplier-form">
-            <h3>Add new Supplier</h3>
+            <h3>Create new Supplier</h3>
             <SupplierFormFields supplier={supplier} handleChange={handleChange} handleAssignedToTask={handleAssignedToTask} tasks={tasks}/>
-            <button type="submit">Hinzufügen</button>
+            <button className="form-submit-button" type="submit">Add Supplier</button>
         </form>
     );
 }

@@ -118,29 +118,32 @@ export default function TaskDetail() {
 
     return (
         <>
-        <div className="details-pages">
             <div className="details-pages__header">
                 <h1 className="details-pages__title">Task Detail</h1>
             </div>
-            <ul className="details-pages__list">
-                <li className="details-pages__list-item" key={task.id}>
-                    <h2 className="details-pages__list-title">{task.title}</h2>
-                    <p className="details-pages__list-description">{task.description}</p>
-                    <p className="details-pages__list-info ">Due Date: {task.dueDate}</p>
-                    <p className="details-pages__list-info">Status: {task.taskStatus}</p>
-                    <p className="details-pages__list-info">Assigned To: {getGuestNames(task.assignedToGuests)}</p>
-                    <p className="details-pages__list-info">Suppliers: {getSupplierNames(task.assignedToSuppliers)}</p>
-                    <button className="details-pages__button" onClick={openModal}>Update Task</button>
-                    <Modal isVisible={isModalVisible} onClose={closeModal}>
-                        <UpdateTaskForm initialTask={task} onSave={handleTaskUpdate} guests={guests} suppliers={suppliers}/>
-                    </Modal>
-                    <button className="details-pages__button details-pages__button--delete" onClick={handleDelete}>Delete
-                    </button>
-                </li>
-            </ul>
-        </div>
+            <div className="details-pages">
+                <ul className="details-pages__list">
+                    <li className="details-pages__list-item" key={task.id}>
+                        <h2 className="details-pages__list-title">{task.title}</h2>
+                        <p className="details-pages__list-description">{task.description}</p>
+                        <p className="details-pages__list-info "><strong>Due Date:</strong> {task.dueDate}</p>
+                        <p className="details-pages__list-info"><strong>Status:</strong> {task.taskStatus}</p>
+                        <p className="details-pages__list-info"><strong>Assigned To:</strong> {getGuestNames(task.assignedToGuests)}</p>
+                        <p className="details-pages__list-info"><strong>Suppliers:</strong> {getSupplierNames(task.assignedToSuppliers)}</p>
+                    </li>
+                </ul>
+                <button className="details-pages__button" onClick={openModal}>Update Task</button>
+                <Modal isVisible={isModalVisible} onClose={closeModal}>
+                    <UpdateTaskForm initialTask={task} onSave={handleTaskUpdate} guests={guests}
+                                    suppliers={suppliers}/>
+                </Modal>
+                <button className="details-pages__button details-pages__button--delete"
+                        onClick={handleDelete}>Delete
+                </button>
+            </div>
             <Link className="details-pages__back-link" to="/tasks">Back to Task List</Link>
-            <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)} onConfirm={confirmDelete} message={"Are you sure you want to delete this task?"}/>
+            <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)}
+                          onConfirm={confirmDelete} message={"Are you sure you want to delete this task?"}/>
 
         </>
     );

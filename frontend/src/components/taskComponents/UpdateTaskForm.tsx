@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Guest, Supplier, Task} from "../FrontendSchema.ts";
 import {updateTask} from "../../api/TaskService.ts";
 import {TaskFormFields} from "./TaskFormFields.tsx";
+import "../../styling/globals/FormFields.css"
 
 interface UpdateTaskFormProps {
     initialTask: Task;
@@ -49,6 +50,7 @@ export default function UpdateTaskForm({ initialTask, onSave, guests, suppliers 
 
     return (
         <form onSubmit={handleSubmit}>
+            <h3>Update Task</h3>
             <TaskFormFields
                 task={task}
                 guests={guests}
@@ -57,7 +59,7 @@ export default function UpdateTaskForm({ initialTask, onSave, guests, suppliers 
                 handleAssignedToGuests={handleAssignedToGuests}
                 handleAssignedToSuppliers={handleAssignedToSuppliers}
             />
-            <button type="submit">Save</button>
+            <button className="form-submit-button" type="submit">Update</button>
         </form>
     );
 }

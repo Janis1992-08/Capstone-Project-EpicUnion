@@ -87,32 +87,34 @@ export default function SupplierDetail() {
 
     return (
         <>
+            <div className="details-pages__header">
+                <h1 className="details-pages__title">Supplier Details</h1>
+            </div>
             <div className="details-pages">
-                <div className="details-pages__header">
-                    <h1 className="details-pages__title">Supplier Details</h1>
-                </div>
                 <ul className="details-pages__list">
                     <li className="details-pages__list-item" key={supplier.id}>
-                        <h2 className="details-pages__list-title">Name: {supplier.name}</h2>
-                        <p className="details-pages__list-description">Description: {supplier.description}</p>
-                        <p className="details-pages__list-info">Website: {supplier.websiteUrl}</p>
-                        <p className="details-pages__list-info">Costs: {supplier.costs}</p>
-                        <p className="details-pages__list-info">Delivery Date: {supplier.deliveryDate}</p>
-                        <p className="details-pages__list-info">Phone: {supplier.contactPhone}</p>
-                        <p className="details-pages__list-info">Email: {supplier.contactEmail}</p>
-                        <p className="details-pages__list-info">Address: {supplier.contactAddress}</p>
-                        <p className="details-pages__list-info">Tasks: {getTaskNames(supplier.assignedTasks)}</p>
-                        <button className="details-pages__button" onClick={openModal}>Update Supplier</button>
-                        <Modal isVisible={isVisible} onClose={closeModal}>
-                            <UpdateSuppliersForm initialSupplier={supplier} onSave={handleSupplierUpdate} tasks={tasks}/>
-                        </Modal>
-                        <button className="details-pages__button details-pages__button--delete"
-                                onClick={handleDelete}>Delete Supplier
-                        </button>
+                        <h2 className="details-pages__list-title">{supplier.name}</h2>
+                        <p className="details-pages__list-description">{supplier.description}</p>
+                        <p className="details-pages__list-info"><strong>Website:</strong> {supplier.websiteUrl}</p>
+                        <p className="details-pages__list-info"><strong>Costs:</strong> {supplier.costs} €</p>
+                        <p className="details-pages__list-info"><strong>Delivery Date:</strong> {supplier.deliveryDate}</p>
+                        <p className="details-pages__list-info"><strong>Phone:</strong> {supplier.contactPhone}</p>
+                        <p className="details-pages__list-info"><strong>Email:</strong> {supplier.contactEmail}</p>
+                        <p className="details-pages__list-info"><strong>Address:</strong> {supplier.contactAddress}</p>
+                        <p className="details-pages__list-info"><strong>Tasks:</strong> {getTaskNames(supplier.assignedTasks)}</p>
                     </li>
                 </ul>
+                <button className="details-pages__button" onClick={openModal}>Update Supplier</button>
+                <Modal isVisible={isVisible} onClose={closeModal}>
+                    <UpdateSuppliersForm initialSupplier={supplier} onSave={handleSupplierUpdate}
+                                         tasks={tasks}/>
+                </Modal>
+                <button className="details-pages__button details-pages__button--delete"
+                        onClick={handleDelete}>Delete Supplier
+                </button>
             </div>
-            <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)} onConfirm={confirmDelete} message={"Are you sure you want to delete this supplier?"} />
+            <ConfirmModal isVisible={isConfirmVisible} onClose={() => setIsConfirmVisible(false)}
+                          onConfirm={confirmDelete} message={"Are you sure you want to delete this supplier?"}/>
             <Link className="details-pages__back-link" to="/suppliers">Back to Supplier List</Link>
         </>
     );

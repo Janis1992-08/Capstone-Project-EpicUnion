@@ -26,11 +26,13 @@
 }
 
 .details-pages__list-item {
-    padding: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
 }
 
 .details-pages__list-title {
+    margin-top: 0;
     font-size: 20px;
     color: #4CAF50;
 }
@@ -39,16 +41,24 @@
     font-size: 16px;
     color: #666;
     margin: 10px 0;
+    background-color: #f9f9f9;
+    padding: 10px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    text-align: justify;
 }
+
 
 .details-pages__list-info {
     font-size: 14px;
     color: #999;
+    align-self: flex-start;
 }
 
 .details-pages__button {
     padding: 10px 20px;
-    margin-right: 10px;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -59,6 +69,7 @@
 
 .details-pages__button--delete {
     background-color: #f44336;
+    margin-left: 10px;
 }
 
 .details-pages__button:hover {
@@ -76,4 +87,40 @@
 
 .details-pages__back-link:hover {
     text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .details-pages {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .details-pages__title {
+        font-size: 20px;
+    }
+
+    .details-pages__list-item {
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-bottom: 20px;
+    }
+
+    .details-pages__list-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+    .details-pages__list-description,
+    .details-pages__list-info {
+        font-size: 14px;
+    }
+
+    .details-pages__button {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+
+    .details-pages__back-link {
+        font-size: 14px;
+    }
 }

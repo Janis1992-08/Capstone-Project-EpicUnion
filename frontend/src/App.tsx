@@ -31,7 +31,7 @@ function App() {
         <>
             <div className="App">
                 {user !== "anonymousUser" && (
-                    <button onClick={logout}>Logout</button>
+                    <button className="logout-button" onClick={logout}>Logout</button>
                 )}
                 <Routes>
                     <Route path="/" element={<RegisterPage />} />

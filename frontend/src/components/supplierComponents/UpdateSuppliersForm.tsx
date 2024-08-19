@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Supplier, Task} from "../FrontendSchema.ts";
 import {updateSupplier} from "../../api/SupplierService.ts";
 import {SupplierFormFields} from "./SupplierFormFields.tsx";
+import "../../styling/globals/FormFields.css"
 
 interface UpdateSupplierFormProps {
     initialSupplier: Supplier;
@@ -42,14 +43,14 @@ export default function UpdateSuppliersForm({ initialSupplier, onSave, tasks }: 
 
     return (
         <form onSubmit={handleSubmit} className="update-guest-form">
-            <h3>Update Guest</h3>
+            <h3>Update Supplier</h3>
             <SupplierFormFields
                 supplier={supplier}
                 handleChange={handleChange}
                 tasks={tasks}
                 handleAssignedToTask={handleAssignedToTask}
             />
-            <button type="submit">Update</button>
+            <button className="form-submit-button" type="submit">Update</button>
         </form>
     );
 }

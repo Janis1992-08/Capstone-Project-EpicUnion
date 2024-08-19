@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Guest, rsvpStatuses, Task} from "../FrontendSchema.ts";
 import {createGuest} from "../../api/GuestService.ts";
 import {GuestFormFields} from "./GuestFormFields.tsx";
+import "../../styling/globals/FormFields.css"
 
 
 interface AddGuestFormProps {
@@ -48,9 +49,9 @@ export default function AddGuestForm({ onSave, tasks }: Readonly<AddGuestFormPro
 
     return (
         <form onSubmit={handleSubmit} className="add-guest-form">
-            <h3>Neuen Gast hinzufügen</h3>
+            <h3>Create new Guest</h3>
             <GuestFormFields formData={formData} handleChange={handleChange} tasks={tasks} handleAssignedToTask={handleAssignedToTask}/>
-            <button type="submit">Hinzufügen</button>
+            <button className="form-submit-button" type="submit">Add Guest</button>
         </form>
     );
 }

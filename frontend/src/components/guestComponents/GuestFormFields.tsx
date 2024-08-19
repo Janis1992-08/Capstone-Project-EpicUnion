@@ -1,5 +1,6 @@
 import React from 'react';
 import {Guest, rsvpStatuses, Task} from "../FrontendSchema.ts";
+import "../../styling/globals/FormFields.css";
 
 interface GuestFormFieldsProps {
     formData: Guest;
@@ -10,7 +11,7 @@ interface GuestFormFieldsProps {
 
 export function GuestFormFields({ formData, handleChange , tasks, handleAssignedToTask}: GuestFormFieldsProps) {
     return (
-        <>
+        <div className="form-fields">
             <div>
                 <label htmlFor="firstName">First Name:</label>
                 <input
@@ -45,11 +46,11 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
                 />
             </div>
             <div>
-                <label htmlFor={"phone"}>Phone:</label>
+                <label htmlFor={"phoneNumber"}>Phone:</label>
                 <input
                     type="tel"
-                    id="phone"
-                    name="phone"
+                    id="phoneNumber"
+                    name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
 
@@ -78,7 +79,7 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
                     onChange={handleChange}
                 />
             </div>
-            <div>
+            <div className="checkbox-group">
                 <label htmlFor="handleAssignedToTask">Assigned Tasks:</label>
                 {tasks.map(task => (
                     <div key={task.id}>
@@ -95,6 +96,6 @@ export function GuestFormFields({ formData, handleChange , tasks, handleAssigned
                     </div>
                 ))}
             </div>
-        </>
+        </div>
     );
 }

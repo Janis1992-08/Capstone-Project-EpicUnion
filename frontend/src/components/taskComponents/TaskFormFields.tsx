@@ -1,5 +1,6 @@
 import React from 'react';
 import {Guest, Supplier, Task, taskStatuses} from "../FrontendSchema.ts";
+import "../../styling/globals/FormFields.css";
 
 interface TaskFormFieldsProps {
     task: Task;
@@ -11,10 +12,8 @@ interface TaskFormFieldsProps {
 }
 
 export function TaskFormFields({ task, guests, handleChange, handleAssignedToGuests, handleAssignedToSuppliers, suppliers }: TaskFormFieldsProps) {
-
-
     return (
-        <>
+        <div className="form-fields">
             <div>
                 <label htmlFor="title">Title:</label>
                 <input
@@ -61,7 +60,7 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToGue
                     ))}
                 </select>
             </div>
-            <div>
+            <div className="checkbox-group">
                 <label htmlFor="assignedToGuests">Assigned Guests:</label>
                 {guests.map(guest => (
                     <div key={guest.id}>
@@ -78,7 +77,7 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToGue
                     </div>
                 ))}
             </div>
-            <div>
+            <div className="checkbox-group">
                 <label htmlFor="assignedToSuppliers">Assigned Suppliers:</label>
                 {suppliers.map(supplier => (
                     <div key={supplier.id}>
@@ -95,6 +94,6 @@ export function TaskFormFields({ task, guests, handleChange, handleAssignedToGue
                     </div>
                 ))}
             </div>
-        </>
+        </div>
     );
 }

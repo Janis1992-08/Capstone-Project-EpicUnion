@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Guest, Task} from "../FrontendSchema.ts";
 import {updateGuest} from "../../api/GuestService.ts";
 import {GuestFormFields} from "./GuestFormFields.tsx";
+import "../../styling/globals/FormFields.css"
 
 interface UpdateGuestFormProps {
     guest: Guest;
@@ -52,7 +53,7 @@ export default function UpdateGuestForm({ guest, onSave, tasks }: UpdateGuestFor
                 tasks={tasks}
                 handleAssignedToTask={handleAssignedToTask}
             />
-            <button type="submit">Update</button>
+            <button className="form-submit-button" type="submit">Update</button>
         </form>
     );
 }

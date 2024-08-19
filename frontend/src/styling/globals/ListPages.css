@@ -31,7 +31,6 @@
     background-color: #45a049;
 }
 
-
 .list-pages__list {
     list-style-type: none;
     padding: 0;
@@ -78,3 +77,37 @@
 .list-pages__back-link:hover {
     text-decoration: underline;
 }
+
+
+@media (max-width: 600px) {
+    .list-pages {
+        padding: 10px;
+        max-width: 100%;
+    }
+
+    .list-pages__title {
+        font-size: 26px;
+    }
+
+    .list-pages__button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .list-pages__list-item {
+        padding: 15px;
+    }
+
+    .list-pages__list-title {
+        font-size: 18px;
+    }
+
+    .list-pages__list-description, .list-pages__list-info {
+        font-size: 14px;
+    }
+
+    .list-pages__back-link {
+        font-size: 14px;
+    }
+}
+

@@ -1,9 +1,9 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
+  max-width: 100%;
   text-align: center;
 }
+
 
 
 @keyframes logo-spin {
@@ -33,13 +33,19 @@
   position: absolute;
   top: 5px;
   right: 5px;
-  padding: 10px 20px;
   background-color: #f44336;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+}
+
+@media (max-width: 600px) {
+  #root {
+    max-width: 100%;
+    padding: 0;
+  }
 }
 
 

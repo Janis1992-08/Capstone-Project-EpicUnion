@@ -3,12 +3,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    height: 100%;
+    width: 100%;
     background: linear-gradient(to bottom right, #4CAF50, #8BC34A);
     color: #fff;
     font-family: 'Arial', sans-serif;
     text-align: center;
-    padding: 20px;
 }
 
 .homepage__title {
@@ -18,6 +18,8 @@
 }
 
 .homepage__nav {
+    width: 100%;
+    text-align: center;
     margin-top: 30px;
 }
 
@@ -27,8 +29,8 @@
 }
 
 .homepage__nav li {
-    display: inline;
-    margin: 0 10px;
+    width: 100%;
+    margin: 10px 0;
 }
 
 .homepage__nav a {
@@ -40,6 +42,9 @@
     border: 2px solid #fff;
     border-radius: 5px;
     transition: background-color 0.3s, color 0.3s;
+    width: 80%;
+    text-align: center;
+    display: block;
 }
 
 .homepage__nav a:hover {
@@ -60,16 +65,18 @@
 
 @media (max-width: 600px) {
     .homepage {
-        min-height: 75vh;
+        min-height: 100vh;
+        width: 100%;
+        padding: 0;
     }
 
     .homepage__title {
-        font-size: 1.5em;
+        font-size: 1.7em;
         margin-bottom: 10px;
     }
 
     .homepage__nav li {
-        display: block;
+        display: flex;
         text-align: center;
         margin-bottom: 10px;
         font-size: 0.8em;
@@ -78,12 +85,14 @@
 
     .homepage__nav a {
         display: inline-block;
-       width: 60%;
+        width: 75%;
         margin: 0 auto;
+
     }
 
     .homepage__nav {
-        width: 100%;
+        width: 90%;
+        padding: 0;
     }
 
 }
